@@ -1,0 +1,6 @@
+﻿Id: DetectHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
+Name: Detect and Enable HDR
+Author: Liam Scholte
+Version: 1.0
+Module: PowerShellScript.psm1
+Type: Script
