@@ -2,5 +2,5 @@
 Name: Detect and Enable HDR
 Author: Liam Scholte
 Version: 1.0.0
-Module: PowerShellScript.psm1
-Type: Script
+Module: HdrManager.dll
+Type: GenericPlugin
