@@ -13,7 +13,6 @@ namespace HDRManager
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private const string HdrExclusionTagName = "[HDR Manager] Excluded";
-        private const string HdrManagerTitle = "HDR Manager";
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
@@ -37,8 +36,8 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Remove from Ignore List",
-                    MenuSection = HdrManagerTitle,
+                    Description = PlayniteApi.Resources.GetString("ContextMenuRemoveExclusionTag"),
+                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
                         var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
@@ -58,8 +57,8 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Add to Ignore List",
-                    MenuSection = HdrManagerTitle,
+                    Description = PlayniteApi.Resources.GetString("ContextMenuAddExclusionTag"),
+                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
                         var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
@@ -80,8 +79,8 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Disable Playnite HDR Support",
-                    MenuSection = HdrManagerTitle,
+                    Description = PlayniteApi.Resources.GetString("ContextMenuDisableHdrSupport"),
+                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
                         using (PlayniteApi.Database.BufferedUpdate())
@@ -100,8 +99,8 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Enable Playnite HDR Support",
-                    MenuSection = HdrManagerTitle,
+                    Description = PlayniteApi.Resources.GetString("ContextMenuEnableHdrSupport"),
+                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
                         using (PlayniteApi.Database.BufferedUpdate())
@@ -122,7 +121,7 @@ namespace HDRManager
         {
             yield return new MainMenuItem
             {
-                Description = "Detect and Activate HDR",
+                Description = PlayniteApi.Resources.GetString("ExtensionMenuRunHdrActivation"),
                 MenuSection = "@",
                 Action = _ => EnableSystemHdr()
             };
