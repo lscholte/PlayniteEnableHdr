@@ -33,7 +33,7 @@ namespace HDRManager
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
-            if (args.Games.Any(game => HasHdrExclusionTag(game)))
+            if (args.Games.All(game => HasHdrExclusionTag(game)))
             {
                 yield return new GameMenuItem
                 {
@@ -54,8 +54,7 @@ namespace HDRManager
                     }
                 };
             }
-
-            if (args.Games.Any(game => !HasHdrExclusionTag(game)))
+            else
             {
                 yield return new GameMenuItem
                 {
