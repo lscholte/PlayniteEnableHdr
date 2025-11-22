@@ -1,0 +1,82 @@
+## Ignore Visual Studio temporary files, build results, and user-specific settings
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+*.log
+
+## NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+## ASP.NET temporary files
+App_Data/
+App_Start/
+Global.asax.*
+web.config
+web.Debug.config
+web.Release.config
+
+## Entity Framework
+*.edmx.*
+*.tt
+*.sql
+
+## Publish output
+publish/
+*.Publish.xml
+
+## Rider and JetBrains IDEs
+.idea/
+*.sln.iml
+
+## Resharper
+*.DotSettings.user
+
+## Windows image cache
+Thumbs.db
+ehthumbs.db
+
+## Others
+*.dbmdl
+*.bak
+*.cache
+*.pid
+*.pdb
+*.tmp
+*.vspscc
+*.vssscc
+*.vsscc
+*.orig
+*.rej
+
+## Ignore test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+## Ignore stylecop and code analysis
+StyleCopReport.xml
+CodeAnalysisLog.xml
+
+## Ignore local secrets
+secrets.json
+
+## Ignore environment-specific files
+.env
+.env.*
+
+## Ignore IDE-specific folders
+.vscode/
