@@ -37,7 +37,7 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Remove HDR Exclusion Tag",
+                    Description = "Remove from Ignore List",
                     MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
@@ -58,7 +58,7 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Add HDR Exclusion Tag",
+                    Description = "Add to Ignore List",
                     MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
@@ -80,7 +80,7 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Disable HDR Support",
+                    Description = "Disable Playnite HDR Support",
                     MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
@@ -100,7 +100,7 @@ namespace HDRManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = "Enable HDR Support",
+                    Description = "Enable Playnite HDR Support",
                     MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
