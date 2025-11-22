@@ -75,6 +75,47 @@ namespace HDRManager
                     }
                 };
             }
+
+            if (args.Games.All(game => game.EnableSystemHdr))
+            {
+                yield return new GameMenuItem
+                {
+                    Description = "Disable HDR Support",
+                    MenuSection = HdrManagerTitle,
+                    Action = (a) =>
+                    {
+                        using (PlayniteApi.Database.BufferedUpdate())
+                        {
+                            foreach (var game in a.Games)
+                            {
+                                logger.Trace($"Disabling HDR support for game {game.Name}");
+                                game.EnableSystemHdr = false;
+                                PlayniteApi.Database.Games.Update(game);
+                            }
+                        }
+                    }
+                };
+            }
+            else
+            {
+                yield return new GameMenuItem
+                {
+                    Description = "Enable HDR Support",
+                    MenuSection = HdrManagerTitle,
+                    Action = (a) =>
+                    {
+                        using (PlayniteApi.Database.BufferedUpdate())
+                        {
+                            foreach (var game in a.Games)
+                            {
+                                logger.Trace($"Enabling HDR support for game {game.Name}");
+                                game.EnableSystemHdr = true;
+                                PlayniteApi.Database.Games.Update(game);
+                            }
+                        }
+                    }
+                };
+            }
         }
 
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
