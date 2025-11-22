@@ -1,6 +1,7 @@
 ﻿Id: EnableHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
-Name: Detect and Enable HDR
+Name: HDR Manager
 Author: Liam Scholte
 Version: 1.0.0
 Module: HdrManager.dll
 Type: GenericPlugin
+Icon: icon.png
