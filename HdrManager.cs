@@ -97,10 +97,14 @@ namespace HDRManager
 
             logger.Info($"Enabling System HDR for {filteredGames.Count} games");
 
-            foreach (var game in filteredGames)
+            using (PlayniteApi.Database.BufferedUpdate())
             {
-                logger.Trace($"Enabling System HDR for game {game.Name}");
-                game.EnableSystemHdr = true;
+                foreach (var game in filteredGames)
+                {
+                    logger.Trace($"Enabling System HDR for game {game.Name}");
+                    game.EnableSystemHdr = true;
+                    PlayniteApi.Database.Games.Update(game);
+                }
             }
         }
 
