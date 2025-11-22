@@ -13,6 +13,7 @@ namespace HDRManager
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private const string HdrExclusionTagName = "[HDR Manager] Excluded";
+        private const string HdrManagerTitle = "HDR Manager";
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
@@ -37,7 +38,7 @@ namespace HDRManager
                 yield return new GameMenuItem
                 {
                     Description = "Remove HDR Exclusion Tag",
-                    MenuSection = "HDR Manager",
+                    MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
                         var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
@@ -59,7 +60,7 @@ namespace HDRManager
                 yield return new GameMenuItem
                 {
                     Description = "Add HDR Exclusion Tag",
-                    MenuSection = "HDR Manager",
+                    MenuSection = HdrManagerTitle,
                     Action = (a) =>
                     {
                         var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
