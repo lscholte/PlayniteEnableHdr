@@ -47,7 +47,7 @@ namespace HDRManager
                             foreach (var game in a.Games)
                             {
                                 logger.Trace($"Removing HDR Exclusion tag from game {game.Name}");
-                                game.TagIds?.Remove(hdrExclusionTag.Id);
+                                game.TagIds?.RemoveAll(tagId => tagId == hdrExclusionTag.Id);
                                 PlayniteApi.Database.Games.Update(game);
                             }
                         }
@@ -135,7 +135,7 @@ namespace HDRManager
             }
             else
             {
-                game.TagIds.Add(tag.Id);
+                game.TagIds.AddMissing(tag.Id);
             }
         }
 
