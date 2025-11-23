@@ -1,0 +1,84 @@
+name: Package Extension on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-hdr-manager:
+    name: Build HDR Manager
+    runs-on: windows-latest
+    steps:
+      - name: Checkout HDR Manager repository
+        uses: actions/checkout@v4
+
+      - name: Install NuGet CLI
+        run: |
+          curl -L https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -o nuget.exe
+
+      - name: Build HDR Manager
+        shell: pwsh
+        run: |
+          ./nuget.exe restore HdrManager.sln
+          dotnet build HdrManager.sln -c Release
+
+      - name: Upload HDR Manager Build Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: HdrManager
+          path: bin/Release/
+
+
+  build-playnite:
+    name: Build Playnite
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Playnite repository
+        uses: actions/checkout@v4
+        with:
+          repository: lscholte/Playnite
+
+      - name: Install powershell-yaml
+        shell: pwsh
+        run: |
+          Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+    
+      - name: Build Playnite
+        shell: pwsh
+        run: |
+          ./build/build.ps1 -Configuration Release
+
+      - name: Upload Playnite Build Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: Playnite
+          path: build/Release/
+
+  package-extension:
+    name: Package HDR Manager Extension
+    needs: [build-hdr-manager, build-playnite]
+    runs-on: windows-latest
+    steps:
+      - name: Download HDR Manager Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: HdrManager
+          path: HdrManager
+
+      - name: Download Playnite Build Output
+        uses: actions/download-artifact@v4
+        with:
+          name: Playnite
+          path: Playnite
+
+      - name: Package extension
+        shell: pwsh
+        run: |
+          ./Playnite/Toolbox.exe pack "HdrManager" "./output"
+
+      - name: Upload Packaged Extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: HdrManager-packaged
+          path: output/
