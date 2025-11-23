@@ -12,7 +12,7 @@ namespace HDRManager
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        private const string HdrExclusionTagName = "[HDR Manager] Excluded";
+        private Guid HdrExclusionTagId = new Guid("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
@@ -22,6 +22,7 @@ namespace HDRManager
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
+            GetOrCreateTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
             EnableSystemHdr();
         }
 
@@ -40,13 +41,12 @@ namespace HDRManager
                     MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
-                        var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
                         using (PlayniteApi.Database.BufferedUpdate())
                         {
                             foreach (var game in a.Games)
                             {
                                 logger.Trace($"Removing HDR Exclusion tag from game {game.Name}");
-                                game.TagIds?.RemoveAll(tagId => tagId == hdrExclusionTag.Id);
+                                game.TagIds?.RemoveAll(tagId => tagId == HdrExclusionTagId);
                                 PlayniteApi.Database.Games.Update(game);
                             }
                         }
@@ -61,7 +61,7 @@ namespace HDRManager
                     MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
                     Action = (a) =>
                     {
-                        var hdrExclusionTag = GetOrCreateTag(HdrExclusionTagName);
+                        var hdrExclusionTag = GetOrCreateTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
                         using (PlayniteApi.Database.BufferedUpdate())
                         {
                             foreach (var game in a.Games)
@@ -162,8 +162,8 @@ namespace HDRManager
             return game
                 .Tags
                 .EmptyIfNull()
-                .Select(tag => tag.Name)
-                .Contains(HdrExclusionTagName);
+                .Select(tag => tag.Id)
+                .Contains(HdrExclusionTagId);
         }
 
         private void AddTagToGame(Game game, Tag tag)
@@ -183,13 +183,26 @@ namespace HDRManager
             Tag tag = PlayniteApi
                .Database
                .Tags
-               .FirstOrDefault(t => t.Name == name);
+               .FirstOrDefault(t => t.Id == HdrExclusionTagId);
             if (tag == null)
             {
                 logger.Info("Creating HDR Exclusion tag");
-                tag = PlayniteApi.Database.Tags.Add(name);
+                tag = new Tag(name)
+                {
+                    Id = HdrExclusionTagId
+                };
+                PlayniteApi.Database.Tags.Add(tag);
             }
-            return tag;
+            else
+            {
+                if (tag.Name != name)
+                {
+                    logger.Info("Updating HDR Exclusion tag name");
+                    tag.Name = name;
+                    PlayniteApi.Database.Tags.Update(tag);
+                }
+            }
+                return tag;
         }
     }
 }
