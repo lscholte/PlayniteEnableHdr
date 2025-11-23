@@ -1,16 +1,15 @@
-name: Package Extension on Push
-
+name: Generate Extension Release
+permissions:
+  contents: write
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-hdr-manager:
     name: Build HDR Manager
     runs-on: windows-latest
     steps:
-      - name: Checkout HDR Manager repository
+      - name: Checkout HDR Manager Repository
         uses: actions/checkout@v4
 
       - name: Install NuGet CLI
@@ -34,7 +33,7 @@ jobs:
     name: Build Playnite
     runs-on: windows-latest
     steps:
-      - name: Checkout Playnite repository
+      - name: Checkout Playnite Repository
         uses: actions/checkout@v4
         with:
           repository: lscholte/Playnite
@@ -60,6 +59,9 @@ jobs:
     needs: [build-hdr-manager, build-playnite]
     runs-on: windows-latest
     steps:
+      - name: Checkout HDR Manager Repository
+        uses: actions/checkout@v4
+
       - name: Download HDR Manager Build Output
         uses: actions/download-artifact@v4
         with:
@@ -72,13 +74,49 @@ jobs:
           name: Playnite
           path: Playnite
 
-      - name: Package extension
+      - name: Package Extension
         shell: pwsh
         run: |
           ./Playnite/Toolbox.exe pack "HdrManager" "./output"
 
-      - name: Upload Packaged Extension
-        uses: actions/upload-artifact@v4
+      - name: Rename Packaged Extension
+        id: rename_pext
+        shell: pwsh
+        run: |
+          mv output/*.pext output/HdrManager.pext
+          $pextPath = "$(pwd)/output/HdrManager.pext"
+          echo "absolute_path=$($pextPath)" >> $env:GITHUB_OUTPUT
+          
+      - name: Install powershell-yaml
+        shell: pwsh
+        run: |
+          Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+
+      - name: Read Manifest Version
+        id: manifest
+        shell: pwsh
+        run: |
+          $manifest = Get-Content ./extension.yaml -Raw | ConvertFrom-Yaml
+          echo "version=$($manifest.Version)" >> $env:GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: HdrManager-packaged
-          path: output/
+          tag_name: v${{ steps.manifest.outputs.version }}
+          release_name: Version ${{ steps.manifest.outputs.version }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Packaged Extension to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.rename_pext.outputs.absolute_path }}
+          asset_name: HdrManager_${{ steps.manifest.outputs.version }}.pext
+          asset_content_type: application/zip
+
