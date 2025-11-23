@@ -7,4 +7,5 @@
     <sys:String x:Key="ContextMenuAddExclusionTag">Add to Ignore List</sys:String>
     <sys:String x:Key="ContextMenuRemoveExclusionTag">Remove from Ignore List</sys:String>
     <sys:String x:Key="ExtensionMenuRunHdrActivation">Detect and Activate HDR</sys:String>
+    <sys:String x:Key="HdrManagerExclusionTag">[HDR Manager] Excluded</sys:String>
 </ResourceDictionary>
