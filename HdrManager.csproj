@@ -5,6 +5,7 @@
 		<RootNamespace>HDRManager</RootNamespace>
 		<AssemblyName>HDRManager</AssemblyName>
 		<OutputType>Library</OutputType>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
