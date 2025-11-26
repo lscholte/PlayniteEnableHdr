@@ -41,6 +41,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create ${{ github.ref_name }} `
-          --title "Version ${{ github.ref_name }}" `
+          --title "Version ${{ steps.version.outputs.version }}" `
           --draft `
           HdrManager_${{ steps.version.outputs.version }}.pext
