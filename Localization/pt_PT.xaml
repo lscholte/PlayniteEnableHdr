@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sys:String x:Key="ContextMenuSectionHeader">Gestor HDR</sys:String>
+    <sys:String x:Key="ContextMenuEnableHdrSupport">Ativar suporte HDR do Playnite</sys:String>
+    <sys:String x:Key="ContextMenuDisableHdrSupport">Desativar suporte HDR do Playnite</sys:String>
+    <sys:String x:Key="ContextMenuAddExclusionTag">Adicionar à lista de ignorados</sys:String>
+    <sys:String x:Key="ContextMenuRemoveExclusionTag">Remover da lista de ignorados</sys:String>
+    <sys:String x:Key="ExtensionMenuRunHdrActivation">Detetar e ativar HDR</sys:String>
+    <sys:String x:Key="HdrManagerExclusionTag">[Gestor HDR] Excluído</sys:String>
+</ResourceDictionary>
