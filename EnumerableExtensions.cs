@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HDRManager
+namespace HdrManager
 {
     public static class EnumerableExtensions
     {
