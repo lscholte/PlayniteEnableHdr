@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net462</TargetFramework>
-		<RootNamespace>HDRManager</RootNamespace>
-		<AssemblyName>HDRManager</AssemblyName>
+		<RootNamespace>HdrManager</RootNamespace>
+		<AssemblyName>HdrManager</AssemblyName>
 		<OutputType>Library</OutputType>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
