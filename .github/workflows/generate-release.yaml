@@ -18,6 +18,21 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Git Cliff
+        shell: pwsh
+        run: |
+          npm install -g git-cliff
+
+      - name: Generate Changelog
+        shell: pwsh
+        run: |
+          git-cliff --current --output CHANGELOG.md
+
       - name: Extract Version
         id: version
         shell: pwsh
@@ -35,12 +50,13 @@ jobs:
         shell: pwsh
         run: |
             Compress-Archive -Path bin/Release/* -DestinationPath HdrManager_${{ steps.version.outputs.version }}.pext -Force
-    
+          
       - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create ${{ github.ref_name }} `
           --title "Version ${{ steps.version.outputs.version }}" `
+          --notes-file CHANGELOG.md `
           --draft `
           HdrManager_${{ steps.version.outputs.version }}.pext
