@@ -3,7 +3,7 @@ An extension to automatically detect games with HDR support and enable HDR for t
 
 ## Deploying a Release
 1. Update the extension version in [extension.yaml](https://github.com/lscholte/PlayniteHdrManager/blob/main/extension.yaml) and push to GitHub.
-1. Run the [Generate Extension Release](https://github.com/lscholte/PlayniteHdrManager/actions/workflows/generate-release.yaml) action to generate a draft release in the [GitHub releases](https://github.com/lscholte/PlayniteHdrManager/releases).
+1. Push a new version tag (e.g. `v1.2`) to run the [Generate Extension Release](https://github.com/lscholte/PlayniteHdrManager/actions/workflows/generate-release.yaml) action, which will generate a draft release in the [GitHub releases](https://github.com/lscholte/PlayniteHdrManager/releases).
 1. Update the extension release [manifest.yaml](https://github.com/lscholte/PlayniteHdrManager/blob/main/manifest.yaml) with a new version, including the `PackageUrl` that references the `.pext` file from the draft release. Push the changes to GitHub.
 1. Modify the draft release description in GitHub to contain relevant release notes.
 1. Publish the relase by un-drafting it.
