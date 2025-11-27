@@ -42,7 +42,7 @@ jobs:
       - name: Generate Release Manifest Changelog
         shell: pwsh
         run: |
-          git-cliff --current --config cliff.yaml.toml   --output YAML-CHANGELOG.txt
+          git-cliff --current --config .github/cliff/yaml.toml   --output YAML-CHANGELOG.txt
 
           if (-Not (Get-Content YAML-CHANGELOG.txt)) {
               Write-Error "❌ There are no user-facing changes from which to generate a release"
@@ -105,7 +105,7 @@ jobs:
       - name: Generate GitHub Release Changelog
         shell: pwsh
         run: |
-          git-cliff --current --config cliff.github.toml --output GITHUB-CHANGELOG.md
+          git-cliff --current --config .github/cliff/github.toml --output GITHUB-CHANGELOG.md
 
       - name: Push Version Bump
         run: |
