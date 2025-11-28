@@ -12,13 +12,17 @@ namespace HdrManager
 {
     public class Plugin : GenericPlugin
     {
+        #region Private Fields
+
         private static readonly ILogger logger = LogManager.GetLogger();
 
         private readonly PluginSettings pluginSettings;
 
         private Guid HdrExclusionTagId = new Guid("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
 
-        public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
+        #endregion
+
+        #region Constructors
 
         public Plugin(IPlayniteAPI api) : base(api)
         {
@@ -28,6 +32,16 @@ namespace HdrManager
             };
             pluginSettings = new PluginSettings(this);
         }
+
+        #endregion
+
+        #region Public Properties
+
+        public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
+
+        #endregion
+
+        #region Public Methods
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
@@ -44,33 +58,6 @@ namespace HdrManager
             GetOrCreateTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
             EnableSystemHdr();
             ShowPcGamingWikiWarning();
-        }
-
-        private void ShowPcGamingWikiWarning()
-        {
-            if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
-                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d")))
-            {
-                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseOK"), true, true);
-                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseSuppressWarning"));
-
-                List<MessageBoxOption> options = new List<MessageBoxOption>()
-                {
-                    okResponse,
-                    suppressWarningResponse
-                };
-
-                MessageBoxOption response = PlayniteApi.Dialogs.ShowMessage(
-                    PlayniteApi.Resources.GetString("PCGamingWikiDialogWarningMessage"),
-                    "",
-                    MessageBoxImage.Warning,
-                    options);
-                if (response == suppressWarningResponse)
-                {
-                    pluginSettings.IsPCGamingWikiWarningSuppressed = true;
-                    SavePluginSettings(pluginSettings);
-                }
-            }
         }
 
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
@@ -174,6 +161,10 @@ namespace HdrManager
             };
         }
 
+        #endregion
+
+        #region Private Methods
+
         private void EnableSystemHdr()
         {
             List<Game> filteredGames = PlayniteApi
@@ -251,5 +242,34 @@ namespace HdrManager
             }
                 return tag;
         }
+
+        private void ShowPcGamingWikiWarning()
+        {
+            if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
+                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d")))
+            {
+                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseOK"), true, true);
+                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseSuppressWarning"));
+
+                List<MessageBoxOption> options = new List<MessageBoxOption>()
+                {
+                    okResponse,
+                    suppressWarningResponse
+                };
+
+                MessageBoxOption response = PlayniteApi.Dialogs.ShowMessage(
+                    PlayniteApi.Resources.GetString("PCGamingWikiDialogWarningMessage"),
+                    "",
+                    MessageBoxImage.Warning,
+                    options);
+                if (response == suppressWarningResponse)
+                {
+                    pluginSettings.IsPCGamingWikiWarningSuppressed = true;
+                    SavePluginSettings(pluginSettings);
+                }
+            }
+        }
+
+        #endregion
     }
 }
