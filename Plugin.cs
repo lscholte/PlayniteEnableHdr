@@ -18,7 +18,8 @@ namespace HdrManager
 
         private readonly PluginSettings pluginSettings;
 
-        private Guid HdrExclusionTagId = new Guid("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
+        private readonly Guid HdrExclusionTagId = Guid.Parse("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
+        private readonly Guid PCGamingWikiPluginId = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
 
         #endregion
 
@@ -246,7 +247,7 @@ namespace HdrManager
         private void ShowPcGamingWikiWarning()
         {
             if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
-                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d")))
+                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == PCGamingWikiPluginId))
             {
                 var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseOK"), true, true);
                 var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseSuppressWarning"));
