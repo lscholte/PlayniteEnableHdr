@@ -8,4 +8,8 @@
     <sys:String x:Key="ContextMenuRemoveExclusionTag">Remove from Ignore List</sys:String>
     <sys:String x:Key="ExtensionMenuRunHdrActivation">Detect and Activate HDR</sys:String>
     <sys:String x:Key="HdrManagerExclusionTag">[HDR Manager] Excluded</sys:String>
+    <sys:String x:Key="DialogResponseOK">OK</sys:String>
+    <sys:String x:Key="DialogResponseSuppressWarning">Don't Show Again</sys:String>
+    <sys:String x:Key="PCGamingWikiDialogWarningMessage">The HDR Manager add-on is installed, but the PCGamingWiki Metadata Provider add-on is not installed. It is recommended to install the PCGamingWiki Metadata Provider add-on to get the best experience with HDR Manager.</sys:String>
+    <sys:String x:Key="SettingSuppressPCGamingWikiWarning">Suppress PCGamingWiki Metadata Provider Warning</sys:String>
 </ResourceDictionary>

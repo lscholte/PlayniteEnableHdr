@@ -4,8 +4,12 @@
     <sys:String x:Key="ContextMenuSectionHeader">Gestor HDR</sys:String>
     <sys:String x:Key="ContextMenuEnableHdrSupport">Ativar suporte HDR do Playnite</sys:String>
     <sys:String x:Key="ContextMenuDisableHdrSupport">Desativar suporte HDR do Playnite</sys:String>
-    <sys:String x:Key="ContextMenuAddExclusionTag">Adicionar � lista de ignorados</sys:String>
+    <sys:String x:Key="ContextMenuAddExclusionTag">Adicionar à lista de ignorados</sys:String>
     <sys:String x:Key="ContextMenuRemoveExclusionTag">Remover da lista de ignorados</sys:String>
     <sys:String x:Key="ExtensionMenuRunHdrActivation">Detetar e ativar HDR</sys:String>
-    <sys:String x:Key="HdrManagerExclusionTag">[Gestor HDR] Exclu�do</sys:String>
+    <sys:String x:Key="HdrManagerExclusionTag">[Gestor HDR] Excluído</sys:String>
+	<sys:String x:Key="DialogResponseOK">OK</sys:String>
+	<sys:String x:Key="DialogResponseSuppressWarning">Não mostrar novamente</sys:String>
+	<sys:String x:Key="PCGamingWikiDialogWarningMessage">A extensão HDR Manager está instalada, mas a extensão PCGamingWiki Metadata Provider não está instalada. Recomenda-se instalar a extensão PCGamingWiki Metadata Provider para obter a melhor experiência com o HDR Manager.</sys:String>
+	<sys:String x:Key="SettingSuppressPCGamingWikiWarning">Suprimir aviso do PCGamingWiki Metadata Provider</sys:String>
 </ResourceDictionary>

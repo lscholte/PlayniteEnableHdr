@@ -5,6 +5,8 @@ using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace HdrManager
 {
@@ -12,18 +14,63 @@ namespace HdrManager
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
+        private readonly PluginSettings pluginSettings;
+
         private Guid HdrExclusionTagId = new Guid("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
         public HdrManager(IPlayniteAPI api) : base(api)
         {
+            Properties = new GenericPluginProperties()
+            {
+                HasSettings = true
+            };
+            pluginSettings = new PluginSettings(this);
+        }
+
+        public override ISettings GetSettings(bool firstRunSettings)
+        {
+            return pluginSettings;
+        }
+
+        public override UserControl GetSettingsView(bool firstRunView)
+        {
+            return new PluginSettingsView();
         }
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
             GetOrCreateTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
             EnableSystemHdr();
+            ShowPcGamingWikiWarning();
+        }
+
+        private void ShowPcGamingWikiWarning()
+        {
+            if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
+                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d")))
+            {
+                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseOK"), true, true);
+                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseSuppressWarning"));
+
+                List<MessageBoxOption> options = new List<MessageBoxOption>()
+                {
+                    okResponse,
+                    suppressWarningResponse
+                };
+
+                MessageBoxOption response = PlayniteApi.Dialogs.ShowMessage(
+                    PlayniteApi.Resources.GetString("PCGamingWikiDialogWarningMessage"),
+                    "",
+                    MessageBoxImage.Warning,
+                    options);
+                if (response == suppressWarningResponse)
+                {
+                    pluginSettings.IsPCGamingWikiWarningSuppressed = true;
+                    SavePluginSettings(pluginSettings);
+                }
+            }
         }
 
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
