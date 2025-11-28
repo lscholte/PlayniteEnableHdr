@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
-    <sys:String x:Key="ContextMenuSectionHeader">Gestionnaire HDR</sys:String>
+    <sys:String x:Key="ContextMenuSectionHeader">HDR Manager</sys:String>
     <sys:String x:Key="ContextMenuEnableHdrSupport">Activer la prise en charge HDR de Playnite</sys:String>
     <sys:String x:Key="ContextMenuDisableHdrSupport">Désactiver la prise en charge HDR de Playnite</sys:String>
     <sys:String x:Key="ContextMenuAddExclusionTag">Ajouter à la liste d’ignorés</sys:String>
     <sys:String x:Key="ContextMenuRemoveExclusionTag">Retirer de la liste d’ignorés</sys:String>
     <sys:String x:Key="ExtensionMenuRunHdrActivation">Détecter et activer le HDR</sys:String>
-    <sys:String x:Key="HdrManagerExclusionTag">[Gestionnaire HDR] Exclu</sys:String>
+    <sys:String x:Key="HdrManagerExclusionTag">[HDR Manager] Exclu</sys:String>
     <sys:String x:Key="DialogResponseOK">OK</sys:String>
     <sys:String x:Key="DialogResponseSuppressWarning">Ne plus afficher</sys:String>
     <sys:String x:Key="PCGamingWikiDialogWarningMessage">L’extension HDR Manager est installée, mais l’extension PCGamingWiki Metadata Provider n’est pas installée. Il est recommandé d’installer l’extension PCGamingWiki Metadata Provider pour profiter pleinement de HDR Manager.</sys:String>
