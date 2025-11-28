@@ -5,13 +5,13 @@ namespace HdrManager
 {
     public class PluginSettings : ISettings
     {
-        private HdrManager plugin;
+        private Plugin plugin;
 
         public PluginSettings()
         {
         }
 
-        public PluginSettings(HdrManager plugin)
+        public PluginSettings(Plugin plugin)
         {
             this.plugin = plugin;
 

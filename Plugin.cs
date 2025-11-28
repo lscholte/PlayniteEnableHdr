@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace HdrManager
 {
-    public class HdrManager : GenericPlugin
+    public class Plugin : GenericPlugin
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
@@ -20,7 +20,7 @@ namespace HdrManager
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
-        public HdrManager(IPlayniteAPI api) : base(api)
+        public Plugin(IPlayniteAPI api) : base(api)
         {
             Properties = new GenericPluginProperties()
             {
