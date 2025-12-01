@@ -28,6 +28,8 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -42,7 +44,7 @@ jobs:
       - name: Generate Release Manifest Changelog
         shell: pwsh
         run: |
-          git-cliff --current --config .github/cliff/yaml.toml   --output YAML-CHANGELOG.txt
+          git-cliff --unreleased --config .github/cliff/yaml.toml --output YAML-CHANGELOG.txt
 
           if (-Not (Get-Content YAML-CHANGELOG.txt)) {
               Write-Error "❌ There are no user-facing changes from which to generate a release"
