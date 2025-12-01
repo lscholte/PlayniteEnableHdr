@@ -1,25 +1,35 @@
 AddonId: EnableHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
 Packages:
-  - Version: 1.2.0
-    RequiredApiVersion: 6.9.0
-    ReleaseDate: 2025-11-26
-    PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.2.0/HdrManager_1.2.0.pext
-    Changelog:
-      - Add French (fr-FR) support
-      - Add Portuguese (pt-PT) support
-  - Version: 1.1.0
-    RequiredApiVersion: 6.9.0
-    ReleaseDate: 2025-11-22
-    PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.1.0/HdrManager_1.1.0.pext
-    Changelog:
-      - Rebrand extension to HDR Manager
-      - Add optional HDR Exclusion tag to games
-      - Combine add/remove HDR exclusion tag context menu item for toggle behaviour
-      - Add game context menu options to manually enable/disable HDR support for games
-      - Add Spanish (es-ES) support
-  - Version: 1.0.0
-    RequiredApiVersion: 6.9.0
-    ReleaseDate: 2023-07-09
-    PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.0.0/PlayniteHdrManager_1.0.0.pext
-    Changelog:
-      - Enable system HDR setting for games automatically
+- ReleaseDate: 2025-12-01
+  Version: 1.3.0
+  RequiredApiVersion: 6.9.0
+  Changelog:
+  - Add a suppressable warning at launch if PCGamingWiki Metadata Provider is not installed
+  - Make French (fr-FR) translations show correctly instead of English
+  - Update non-English translations to refer to "HDR Manager" name in English
+  - Add check for "HDR Available" game feature from Steam Store
+  PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.3.0/HdrManager_1.3.0.pext
+- ReleaseDate: 2025-11-26
+  Version: 1.2.0
+  RequiredApiVersion: 6.9.0
+  Changelog:
+  - Add French (fr-FR) support
+  - Add Portuguese (pt-PT) support
+  PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.2.0/HdrManager_1.2.0.pext
+- ReleaseDate: 2025-11-22
+  Version: 1.1.0
+  RequiredApiVersion: 6.9.0
+  Changelog:
+  - Rebrand extension to HDR Manager
+  - Add optional HDR Exclusion tag to games
+  - Combine add/remove HDR exclusion tag context menu item for toggle behaviour
+  - Add game context menu options to manually enable/disable HDR support for games
+  - Add Spanish (es-ES) support
+  PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.1.0/HdrManager_1.1.0.pext
+- ReleaseDate: 2023-07-09
+  Version: 1.0.0
+  RequiredApiVersion: 6.9.0
+  Changelog:
+  - Enable system HDR setting for games automatically
+  PackageUrl: https://github.com/lscholte/PlayniteHdrManager/releases/download/v1.0.0/PlayniteHdrManager_1.0.0.pext
+

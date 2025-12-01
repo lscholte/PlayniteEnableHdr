@@ -1,7 +1,8 @@
-﻿Id: EnableHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
-Name: HDR Manager
 Author: Liam Scholte
-Version: 1.2.0
-Module: HdrManager.dll
-Type: GenericPlugin
+Version: 1.3.0
 Icon: icon.png
+Id: EnableHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
+Type: GenericPlugin
+Module: HdrManager.dll
+Name: HDR Manager
+
