@@ -17,6 +17,10 @@
 	  <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<AssetsDir>$(SolutionDir)</AssetsDir>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="PlayniteSDK" Version="6.9.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
@@ -25,8 +29,8 @@
 
 	<ItemGroup>
 		<!-- Extension metadata -->
-		<None Include="extension.yaml" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="icon.png" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(AssetsDir)extension.yaml" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(AssetsDir)icon.png" CopyToOutputDirectory="PreserveNewest" />
 
 		<!-- Localization files -->
 		<None Include="Localization\*.xaml" CopyToOutputDirectory="PreserveNewest" />
