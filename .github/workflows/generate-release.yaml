@@ -102,7 +102,7 @@ jobs:
       - name: Package Extension
         shell: pwsh
         run: |
-            Compress-Archive -Path bin/Release/* -DestinationPath HdrManager_${{ github.event.inputs.version }}.pext -Force
+            Compress-Archive -Path src/HdrManager/bin/Release/* -DestinationPath HdrManager_${{ github.event.inputs.version }}.pext -Force
 
       - name: Generate GitHub Release Changelog
         shell: pwsh
