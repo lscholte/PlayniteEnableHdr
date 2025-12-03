@@ -18,10 +18,20 @@
 	<ItemGroup>
 		<PackageReference Include="Moq" Version="4.20.72" />
 		<PackageReference Include="NUnit" Version="4.4.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="5.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\HdrManager\HdrManager.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="PresentationFramework" />
+	  <Reference Include="System.Xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<LocalizationFiles Include="..\..\src\HdrManager\Localization\*.xaml" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 </Project>
