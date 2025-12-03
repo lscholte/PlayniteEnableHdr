@@ -48,6 +48,7 @@ jobs:
 
           if (-Not (Get-Content YAML-CHANGELOG.txt)) {
               Write-Error "❌ There are no user-facing changes from which to generate a release"
+              exit 1
           }
 
       - name: Install YAML Powershell Module
@@ -64,6 +65,12 @@ jobs:
           $yaml.Version = "${{ github.event.inputs.version }}"
           $yaml | ConvertTo-Yaml | Set-Content extension.yaml
 
+      - name: Check Playnite SDK Version
+        shell: pwsh
+        run: |
+          [xml]$proj = Get-Content .\src\HdrManager\HdrManager.csproj
+          $pkg = $proj.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "PlayniteSDK" }
+          echo "PLAYNITE_SDK_VERSION=$pkg.Version" >> $env:GITHUB_ENV
       - name: Update Release Manifest
         shell: pwsh
         run: |
@@ -71,7 +78,7 @@ jobs:
 
           $newPackage = @{
             Version = "${{ github.event.inputs.version }}"
-            RequiredApiVersion = "6.9.0"
+            RequiredApiVersion = "$PLAYNITE_SDK_VERSION"
             ReleaseDate = (Get-Date -Format "yyyy-MM-dd")
             PackageUrl = "https://github.com/lscholte/PlayniteHdrManager/releases/download/v${{ github.event.inputs.version }}/HdrManager_${{ github.event.inputs.version }}.pext"
             Changelog = @(Get-Content YAML-CHANGELOG.txt)
