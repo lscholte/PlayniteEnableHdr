@@ -18,7 +18,7 @@ namespace HdrManager
 
         private readonly PluginSettings pluginSettings;
 
-        private readonly Guid HdrExclusionTagId = Guid.Parse("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
+        public static readonly Guid HdrExclusionTagId = Guid.Parse("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
         private readonly Guid PCGamingWikiPluginId = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
         private readonly List<string> HdrFeatures = new List<string>()
         {
@@ -205,9 +205,8 @@ namespace HdrManager
         private bool HasHdrExclusionTag(Game game)
         {
             return game
-                .Tags
+                .TagIds
                 .EmptyIfNull()
-                .Select(tag => tag.Id)
                 .Contains(HdrExclusionTagId);
         }
 
