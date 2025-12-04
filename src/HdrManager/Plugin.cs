@@ -1,4 +1,5 @@
-﻿using Playnite.SDK;
+﻿using HdrManager.Extensions;
+using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
 using System;

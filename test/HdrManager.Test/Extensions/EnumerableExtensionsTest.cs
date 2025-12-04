@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
+﻿using HdrManager.Extensions;
+using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace HdrManager.Test
+namespace HdrManager.Test.Extensions
 {
     [TestFixture]
     public class EnumerableExtensionsTest
