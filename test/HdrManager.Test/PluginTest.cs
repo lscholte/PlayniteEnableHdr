@@ -92,7 +92,7 @@ namespace HdrManager.Test
             {
                 TagIds = new List<Guid>()
                 {
-                    Plugin.HdrExclusionTagId
+                    SystemHdrManager.HdrExclusionTagId
                 }
             };
 
@@ -133,7 +133,7 @@ namespace HdrManager.Test
 
             menuItem.Action(menuItemActionArgs);
 
-            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(Plugin.HdrExclusionTagId));
+            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
         }
 
         [Test]
@@ -160,7 +160,7 @@ namespace HdrManager.Test
 
             menuItem.Action(menuItemActionArgs);
 
-            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Not.Contain(Plugin.HdrExclusionTagId));
+            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Not.Contain(SystemHdrManager.HdrExclusionTagId));
         }
 
         [Test]
@@ -187,8 +187,8 @@ namespace HdrManager.Test
 
             menuItem.Action(menuItemActionArgs);
 
-            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(Plugin.HdrExclusionTagId));
-            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Contain(Plugin.HdrExclusionTagId));
+            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
+            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
         }
 
         [Test]
