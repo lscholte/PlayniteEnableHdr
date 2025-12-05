@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace HdrManager
 {
-    public class SystemHdrManager
+    public class SystemHdrManager : ISystemHdrManager
     {
         public static readonly Guid HdrExclusionTagId = Guid.Parse("b7f2a9d3-4c1e-4a8b-9f6d-2e3c1a5d7b84");
 

@@ -15,7 +15,7 @@ namespace HdrManager
         #region Private Fields
 
         private readonly PluginSettings pluginSettings;
-        private readonly SystemHdrManager systemHdrManager;
+        private readonly ISystemHdrManager systemHdrManager;
 
         private readonly Guid PCGamingWikiPluginId = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
 
@@ -23,14 +23,20 @@ namespace HdrManager
 
         #region Constructors
 
-        public Plugin(IPlayniteAPI api) : base(api)
+        public Plugin(IPlayniteAPI api)
+            : this(api, new SystemHdrManager(api))
+        {
+        }
+
+        public Plugin(IPlayniteAPI api, ISystemHdrManager systemHdrManager)
+            : base(api)
         {
             Properties = new GenericPluginProperties()
             {
                 HasSettings = true
             };
             pluginSettings = new PluginSettings(this);
-            systemHdrManager = new SystemHdrManager(api);
+            this.systemHdrManager = systemHdrManager;
         }
 
         #endregion
