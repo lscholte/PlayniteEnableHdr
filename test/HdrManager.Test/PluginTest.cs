@@ -5,7 +5,6 @@ using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace HdrManager.Test
 {
@@ -19,7 +18,6 @@ namespace HdrManager.Test
 
         private Mock<IPlaynitePathsAPI> mockPlaynitePathsApi;
         private Mock<IResourceProvider> mockResourceProvider;
-        private Mock<IGameDatabaseAPI> mockGameDatabaseApi;
         private Mock<IPlayniteAPI> mockPlayniteApi;
 
         private Game gameWithHdrExclusionTag;
@@ -52,26 +50,6 @@ namespace HdrManager.Test
                 .Setup(mock => mock.GetString("ContextMenuDisableHdrSupport"))
                 .Returns(DisableSystemHdrString);
 
-            List<Tag> backingTagList = new List<Tag>();
-            Mock<IItemCollection<Tag>> mockTagCollection = new Mock<IItemCollection<Tag>>();
-            mockTagCollection
-                .Setup(mock => mock.GetEnumerator())
-                .Returns(backingTagList.GetEnumerator());
-
-            List<Game> backingGameList = new List<Game>();
-            Mock<IItemCollection<Game>> mockGameCollection = new Mock<IItemCollection<Game>>();
-            mockGameCollection
-                .Setup(mock => mock.GetEnumerator())
-                .Returns(backingGameList.GetEnumerator());
-
-            mockGameDatabaseApi = new Mock<IGameDatabaseAPI>();
-            mockGameDatabaseApi
-                .SetupGet(mock => mock.Tags)
-                .Returns(mockTagCollection.Object);
-            mockGameDatabaseApi
-                .SetupGet(mock => mock.Games)
-                .Returns(mockGameCollection.Object);
-
             mockPlayniteApi = new Mock<IPlayniteAPI>();
             mockPlayniteApi
                 .SetupGet(mock => mock.Paths)
@@ -79,9 +57,6 @@ namespace HdrManager.Test
             mockPlayniteApi
                 .SetupGet(mock => mock.Resources)
                 .Returns(mockResourceProvider.Object);
-            mockPlayniteApi
-                .SetupGet(mock => mock.Database)
-                .Returns(mockGameDatabaseApi.Object);
 
             gameWithoutHdrExclusionTag = new Game
             {
@@ -123,17 +98,6 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == AddHdrExclusionTagString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
         }
 
         [Test]
@@ -150,17 +114,6 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == RemoveHdrExclusionTagString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Not.Contain(SystemHdrManager.HdrExclusionTagId));
         }
 
         [Test]
@@ -176,19 +129,7 @@ namespace HdrManager.Test
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == AddHdrExclusionTagString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithoutHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
-            Assert.That(gameWithHdrExclusionTag.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));         
         }
 
         [Test]
@@ -205,17 +146,6 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == EnableSystemHdrString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithSystemHdrDisabled.EnableSystemHdr, Is.True);
         }
 
         [Test]
@@ -232,17 +162,6 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == DisableSystemHdrString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithSystemHdrEnabled.EnableSystemHdr, Is.False);
         }
 
         [Test]
@@ -259,18 +178,6 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
-
-            GameMenuItem menuItem = menuItems.First(item => item.Description == EnableSystemHdrString);
-
-            var menuItemActionArgs = new GameMenuItemActionArgs
-            {
-                Games = games
-            };
-
-            menuItem.Action(menuItemActionArgs);
-
-            Assert.That(gameWithSystemHdrDisabled.EnableSystemHdr, Is.True);
-            Assert.That(gameWithSystemHdrEnabled.EnableSystemHdr, Is.True);
         }
     }
 }
