@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using HdrManager.Localization.Generated;
+using Moq;
 using NUnit.Framework;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -11,11 +12,6 @@ namespace HdrManager.Test
     [TestFixture]
     public class PluginTest
     {
-        private const string AddHdrExclusionTagString = "Add HDR Exclusion Tag";
-        private const string RemoveHdrExclusionTagString = "Remove HDR Exclusion Tag";
-        private const string EnableSystemHdrString = "Enable System HDR";
-        private const string DisableSystemHdrString = "Disable System HDR";
-
         private Mock<IPlaynitePathsAPI> mockPlaynitePathsApi;
         private Mock<IResourceProvider> mockResourceProvider;
         private Mock<IPlayniteAPI> mockPlayniteApi;
@@ -38,17 +34,8 @@ namespace HdrManager.Test
 
             mockResourceProvider = new Mock<IResourceProvider>();
             mockResourceProvider
-                .Setup(mock => mock.GetString("ContextMenuAddExclusionTag"))
-                .Returns(AddHdrExclusionTagString);
-            mockResourceProvider
-                .Setup(mock => mock.GetString("ContextMenuRemoveExclusionTag"))
-                .Returns(RemoveHdrExclusionTagString);
-            mockResourceProvider
-                .Setup(mock => mock.GetString("ContextMenuEnableHdrSupport"))
-                .Returns(EnableSystemHdrString);
-            mockResourceProvider
-                .Setup(mock => mock.GetString("ContextMenuDisableHdrSupport"))
-                .Returns(DisableSystemHdrString);
+                .Setup(mock => mock.GetString(It.IsAny<string>()))
+                .Returns((string key) => key);
 
             mockPlayniteApi = new Mock<IPlayniteAPI>();
             mockPlayniteApi
@@ -96,8 +83,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));
         }
 
         [Test]
@@ -112,8 +99,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));
         }
 
         [Test]
@@ -128,8 +115,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == AddHdrExclusionTagString));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == RemoveHdrExclusionTagString));         
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));         
         }
 
         [Test]
@@ -144,8 +131,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
         }
 
         [Test]
@@ -160,8 +147,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
         }
 
         [Test]
@@ -176,8 +163,8 @@ namespace HdrManager.Test
 
             IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
 
-            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == EnableSystemHdrString));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == DisableSystemHdrString));
+            Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
         }
     }
 }
