@@ -5,10 +5,7 @@
 		<RootNamespace>HdrManager</RootNamespace>
 		<AssemblyName>HdrManager</AssemblyName>
 		<OutputType>Library</OutputType>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
-		<LangVersion>12.0</LangVersion>
-		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup>
