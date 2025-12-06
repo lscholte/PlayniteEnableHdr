@@ -1,0 +1,19 @@
+name: Run Tests
+
+on:
+  push:
+    branches: ['**']
+
+jobs:
+  run-tests:
+    name: Run Tests (${{ matrix.config}})
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Tests (${{ matrix.config }})
+        run: dotnet test --configuration ${{ matrix.config }}
