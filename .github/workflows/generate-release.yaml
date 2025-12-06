@@ -103,8 +103,11 @@ jobs:
 
       - name: Build Extension
         shell: pwsh
-        run: |
-          dotnet build HdrManager.sln -c Release
+        run: dotnet build HdrManager.sln --configuration Release
+
+      - name: Run Tests
+        shell: pwsh
+        run: dotnet test --configuration Release
 
       - name: Package Extension
         shell: pwsh
