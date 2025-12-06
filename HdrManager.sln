@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11222.15 d18.0
+VisualStudioVersion = 18.0.11222.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HdrManager", "src\HdrManager\HdrManager.csproj", "{B4133552-1D22-144B-2438-7D7A01A54298}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HdrManager.Test", "test\HdrManager.Test\HdrManager.Test.csproj", "{BB08A785-F690-479F-8C2A-0E1187D2C917}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HdrManager.Generator", "src\HdrManager.Generator\HdrManager.Generator.csproj", "{C6EF3CED-26CA-46D1-AD68-A9B73184B40F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BB08A785-F690-479F-8C2A-0E1187D2C917}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB08A785-F690-479F-8C2A-0E1187D2C917}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB08A785-F690-479F-8C2A-0E1187D2C917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6EF3CED-26CA-46D1-AD68-A9B73184B40F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6EF3CED-26CA-46D1-AD68-A9B73184B40F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6EF3CED-26CA-46D1-AD68-A9B73184B40F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6EF3CED-26CA-46D1-AD68-A9B73184B40F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

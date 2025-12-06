@@ -19,6 +19,7 @@
 		<PackageReference Include="PlayniteSDK" Version="6.9.0">
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
+		<ProjectReference Include="..\HdrManager.Generator\HdrManager.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,6 +29,9 @@
 
 		<!-- Localization files -->
 		<None Include="Localization\*.xaml" CopyToOutputDirectory="PreserveNewest" />
+
+		<!-- Localization file for LocalizationKeys generator -->
+		<AdditionalFiles Include="Localization\en_US.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

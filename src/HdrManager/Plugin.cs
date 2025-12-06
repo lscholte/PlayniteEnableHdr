@@ -1,4 +1,5 @@
 ﻿using HdrManager.Extensions;
+using HdrManager.Localization.Generated;
 using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
@@ -61,7 +62,7 @@ namespace HdrManager
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
+            systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
             systemHdrManager.EnableSystemHdrForManagedGames();
             ShowPcGamingWikiWarning();
         }
@@ -77,8 +78,8 @@ namespace HdrManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = PlayniteApi.Resources.GetString("ContextMenuRemoveExclusionTag"),
-                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
+                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuRemoveExclusionTag),
+                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
                     Action = (a) => systemHdrManager.RemoveHdrExclusionTagFromGames(a.Games)
                 };
             }
@@ -86,11 +87,11 @@ namespace HdrManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = PlayniteApi.Resources.GetString("ContextMenuAddExclusionTag"),
-                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
+                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuAddExclusionTag),
+                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
                     Action = (a) =>
                     {
-                        systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString("HdrManagerExclusionTag"));
+                        systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
                         systemHdrManager.AddHdrExclusionTagToGames(a.Games);
                     }
                 };
@@ -100,8 +101,8 @@ namespace HdrManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = PlayniteApi.Resources.GetString("ContextMenuDisableHdrSupport"),
-                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
+                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuDisableHdrSupport),
+                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
                     Action = (a) => systemHdrManager.SetSystemHdrForGames(a.Games, false)
                 };
             }
@@ -109,8 +110,8 @@ namespace HdrManager
             {
                 yield return new GameMenuItem
                 {
-                    Description = PlayniteApi.Resources.GetString("ContextMenuEnableHdrSupport"),
-                    MenuSection = PlayniteApi.Resources.GetString("ContextMenuSectionHeader"),
+                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuEnableHdrSupport),
+                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
                     Action = (a) => systemHdrManager.SetSystemHdrForGames(a.Games, true)
                 };
             }
@@ -120,7 +121,7 @@ namespace HdrManager
         {
             yield return new MainMenuItem
             {
-                Description = PlayniteApi.Resources.GetString("ExtensionMenuRunHdrActivation"),
+                Description = PlayniteApi.Resources.GetString(LocalizationKeys.ExtensionMenuRunHdrActivation),
                 MenuSection = "@",
                 Action = _ => systemHdrManager.EnableSystemHdrForManagedGames()
             };
@@ -135,8 +136,8 @@ namespace HdrManager
             if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
                 !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == PCGamingWikiPluginId))
             {
-                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseOK"), true, true);
-                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString("DialogResponseSuppressWarning"));
+                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString(LocalizationKeys.DialogResponseOK), true, true);
+                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString(LocalizationKeys.DialogResponseSuppressWarning));
 
                 List<MessageBoxOption> options = new List<MessageBoxOption>()
                 {
@@ -145,7 +146,7 @@ namespace HdrManager
                 };
 
                 MessageBoxOption response = PlayniteApi.Dialogs.ShowMessage(
-                    PlayniteApi.Resources.GetString("PCGamingWikiDialogWarningMessage"),
+                    PlayniteApi.Resources.GetString(LocalizationKeys.PCGamingWikiDialogWarningMessage),
                     "",
                     MessageBoxImage.Warning,
                     options);
