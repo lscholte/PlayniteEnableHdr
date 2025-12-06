@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HdrManager
 {
-    public class PluginSettings : ISettings
+    public class PluginSettings : IPluginSettings
     {
         private Plugin plugin;
 

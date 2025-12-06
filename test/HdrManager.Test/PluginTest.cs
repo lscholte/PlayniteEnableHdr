@@ -2,10 +2,14 @@
 using Moq;
 using NUnit.Framework;
 using Playnite.SDK;
+using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace HdrManager.Test
 {
@@ -14,7 +18,12 @@ namespace HdrManager.Test
     {
         private Mock<IPlaynitePathsAPI> mockPlaynitePathsApi;
         private Mock<IResourceProvider> mockResourceProvider;
+        private Mock<IDialogsFactory> mockDialogsFactory;
+        private Mock<IAddons> mockAddons;
         private Mock<IPlayniteAPI> mockPlayniteApi;
+
+        private Mock<IPluginSettings> mockPluginSettings;
+        private Mock<ISystemHdrManager> mockSystemHdrManager;
 
         private Game gameWithHdrExclusionTag;
         private Game gameWithoutHdrExclusionTag;
@@ -30,12 +39,16 @@ namespace HdrManager.Test
             mockPlaynitePathsApi = new Mock<IPlaynitePathsAPI>();
             mockPlaynitePathsApi
                 .SetupGet(mock => mock.ExtensionsDataPath)
-                .Returns("");
+                .Returns("PluginData");
 
             mockResourceProvider = new Mock<IResourceProvider>();
             mockResourceProvider
                 .Setup(mock => mock.GetString(It.IsAny<string>()))
                 .Returns((string key) => key);
+
+            mockDialogsFactory = new Mock<IDialogsFactory>();
+
+            mockAddons = new Mock<IAddons>();
 
             mockPlayniteApi = new Mock<IPlayniteAPI>();
             mockPlayniteApi
@@ -44,6 +57,17 @@ namespace HdrManager.Test
             mockPlayniteApi
                 .SetupGet(mock => mock.Resources)
                 .Returns(mockResourceProvider.Object);
+            mockPlayniteApi
+                .SetupGet(mock => mock.Dialogs)
+                .Returns(mockDialogsFactory.Object);
+            mockPlayniteApi
+                .SetupGet(mock => mock.Addons)
+                .Returns(mockAddons.Object);
+
+            mockPluginSettings = new Mock<IPluginSettings>();
+            mockPluginSettings.SetupAllProperties();
+
+            mockSystemHdrManager = new Mock<ISystemHdrManager>();
 
             gameWithoutHdrExclusionTag = new Game
             {
@@ -68,10 +92,20 @@ namespace HdrManager.Test
                 EnableSystemHdr = false
             };
 
-            plugin = new Plugin(mockPlayniteApi.Object);
+            plugin = new Plugin(mockPlayniteApi.Object, mockPluginSettings.Object, mockSystemHdrManager.Object);
         }
 
-        [Test]
+        [TearDown]
+        public void TearDown()
+        {
+            string extensionDataPath = mockPlaynitePathsApi.Object.ExtensionsDataPath;
+            if (Directory.Exists(extensionDataPath))
+            {
+                Directory.Delete(extensionDataPath, true);
+            }
+        }
+
+            [Test]
         public void GetGameMenuItems_SelectedSingleGameWithoutHdrExclusionTag_HasAddHdrExclusionMenuItem()
         {
             var games = new List<Game> { gameWithoutHdrExclusionTag };
@@ -165,6 +199,147 @@ namespace HdrManager.Test
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
+        }
+
+        [Test]
+        public void OnApplicationStarted_PcGamingWikiNotInstalled_WarningDialogIsShown()
+        {
+            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            mockPlugin
+                .SetupGet(mock => mock.Id)
+                .Returns(Guid.NewGuid());
+
+            mockAddons
+                .SetupGet(mock => mock.Plugins)
+                .Returns([mockPlugin.Object]);
+            var applicationStartedArgs = new OnApplicationStartedEventArgs();
+
+            plugin.OnApplicationStarted(applicationStartedArgs);
+
+            mockDialogsFactory.Verify(
+                mock => mock.ShowMessage(
+                    LocalizationKeys.PCGamingWikiDialogWarningMessage,
+                    It.IsAny<string>(),
+                    MessageBoxImage.Warning,
+                    It.IsAny<List<MessageBoxOption>>()),
+                Times.Once);
+        }
+
+        [Test]
+        public void OnApplicationStarted_PcGamingWikiNotInstalled_WarningSupressed_WarningDialogIsNotShown()
+        {
+            mockPluginSettings
+                .SetupGet(mock => mock.IsPCGamingWikiWarningSuppressed)
+                .Returns(true);
+
+            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            mockPlugin
+                .SetupGet(mock => mock.Id)
+                .Returns(Guid.NewGuid());
+
+            mockAddons
+                .SetupGet(mock => mock.Plugins)
+                .Returns([mockPlugin.Object]);
+            var applicationStartedArgs = new OnApplicationStartedEventArgs();
+
+            plugin.OnApplicationStarted(applicationStartedArgs);
+
+            mockDialogsFactory.Verify(
+                mock => mock.ShowMessage(
+                    LocalizationKeys.PCGamingWikiDialogWarningMessage,
+                    It.IsAny<string>(),
+                    MessageBoxImage.Warning,
+                    It.IsAny<List<MessageBoxOption>>()),
+                Times.Never);
+        }
+
+        [Test]
+        public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_SuppressWarningClicked_SettingIsSaved()
+        {
+            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            mockPlugin
+                .SetupGet(mock => mock.Id)
+                .Returns(Guid.NewGuid());
+
+            mockAddons
+                .SetupGet(mock => mock.Plugins)
+                .Returns([mockPlugin.Object]);
+
+            mockDialogsFactory
+                .Setup(
+                    mock => mock.ShowMessage(
+                        LocalizationKeys.PCGamingWikiDialogWarningMessage,
+                        It.IsAny<string>(),
+                        It.IsAny<MessageBoxImage>(),
+                        It.IsAny<List<MessageBoxOption>>()))
+                .Returns((string _, string _, MessageBoxImage _, List<MessageBoxOption> options) =>
+                {
+                    return options.FirstOrDefault(o => o.Title == LocalizationKeys.DialogResponseSuppressWarning);
+                });
+
+            var applicationStartedArgs = new OnApplicationStartedEventArgs();
+            plugin.OnApplicationStarted(applicationStartedArgs);
+
+            var settings = plugin.GetSettings(false) as IPluginSettings;
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.IsPCGamingWikiWarningSuppressed, Is.True);
+        }
+
+        public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_OKClicked_SettingIsNotSaved()
+        {
+            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            mockPlugin
+                .SetupGet(mock => mock.Id)
+                .Returns(Guid.NewGuid());
+
+            mockAddons
+                .SetupGet(mock => mock.Plugins)
+                .Returns([mockPlugin.Object]);
+
+            mockDialogsFactory
+                .Setup(
+                    mock => mock.ShowMessage(
+                        LocalizationKeys.PCGamingWikiDialogWarningMessage,
+                        It.IsAny<string>(),
+                        It.IsAny<MessageBoxImage>(),
+                        It.IsAny<List<MessageBoxOption>>()))
+                .Returns((string _, string _, MessageBoxImage _, List<MessageBoxOption> options) =>
+                {
+                    return options.FirstOrDefault(o => o.Title == LocalizationKeys.DialogResponseOK);
+                });
+
+            var applicationStartedArgs = new OnApplicationStartedEventArgs();
+            plugin.OnApplicationStarted(applicationStartedArgs);
+
+            var settings = plugin.GetSettings(false) as IPluginSettings;
+
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(settings.IsPCGamingWikiWarningSuppressed, Is.False);
+        }
+
+        [Test]
+        public void OnApplicationStarted_PcGamingWikiInstalled_WarningDialogIsNotShown()
+        {
+            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            mockPlugin
+                .SetupGet(mock => mock.Id)
+                .Returns(Plugin.PCGamingWikiPluginId);
+
+            mockAddons
+                .SetupGet(mock => mock.Plugins)
+                .Returns([mockPlugin.Object]);
+            var applicationStartedArgs = new OnApplicationStartedEventArgs();
+
+            plugin.OnApplicationStarted(applicationStartedArgs);
+
+            mockDialogsFactory.Verify(
+                mock => mock.ShowMessage(
+                    LocalizationKeys.PCGamingWikiDialogWarningMessage,
+                    It.IsAny<string>(),
+                    MessageBoxImage.Warning,
+                    It.IsAny<List<MessageBoxOption>>()),
+                Times.Never);
         }
     }
 }

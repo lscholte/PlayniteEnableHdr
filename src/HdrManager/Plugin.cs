@@ -15,10 +15,8 @@ namespace HdrManager
     {
         #region Private Fields
 
-        private readonly PluginSettings pluginSettings;
+        private readonly IPluginSettings pluginSettings;
         private readonly ISystemHdrManager systemHdrManager;
-
-        private readonly Guid PCGamingWikiPluginId = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
 
         #endregion
 
@@ -40,9 +38,17 @@ namespace HdrManager
             this.systemHdrManager = systemHdrManager;
         }
 
+        public Plugin(IPlayniteAPI api, IPluginSettings pluginSettings, ISystemHdrManager systemHdrManager)
+            : this(api, systemHdrManager)
+        {
+            this.pluginSettings = pluginSettings;
+        }
+
         #endregion
 
         #region Public Properties
+
+        public static Guid PCGamingWikiPluginId { get; } = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
 
         public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
 
@@ -152,8 +158,9 @@ namespace HdrManager
                     options);
                 if (response == suppressWarningResponse)
                 {
+                    pluginSettings.BeginEdit();
                     pluginSettings.IsPCGamingWikiWarningSuppressed = true;
-                    SavePluginSettings(pluginSettings);
+                    pluginSettings.EndEdit();
                 }
             }
         }
