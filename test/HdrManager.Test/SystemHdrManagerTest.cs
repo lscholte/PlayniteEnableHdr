@@ -154,11 +154,9 @@ namespace HdrManager.Test
             backingFeatureList.Add(hdrFeature);
             backingFeatureList.Add(nonHdrFeature);
 
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
-
             systemHdrManager.EnableSystemHdrForManagedGames();
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 foreach (Game game in hdrGames)
                 {
@@ -168,7 +166,7 @@ namespace HdrManager.Test
                 {
                     Assert.That(game.EnableSystemHdr, Is.False, $"Game {game.Name} has EnableSystemHdr set to false but expected true");
                 }
-            });
+            }
         }
 
         [Test]
@@ -230,14 +228,14 @@ namespace HdrManager.Test
 
             systemHdrManager.SetSystemHdrForGames(games, enableSystemHdr);
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 foreach (Game game in games)
                 {
                     Assert.That(game.EnableSystemHdr, Is.EqualTo(enableSystemHdr), $"Game {game.Name} has EnableSystemHdr set to {!enableSystemHdr} but expected {enableSystemHdr}");
                 }
                 mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
-            });
+            }
         }
 
         [Test]

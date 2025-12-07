@@ -162,3 +162,11 @@ dotnet_diagnostic.RCS1268.severity = warning
 
 # Remove unnecessary value assignment (IDE0059)
 dotnet_diagnostic.IDE0059.severity = warning
+
+# --------------------------------------------
+# NUnit Rules
+# --------------------------------------------
+
+# NUnit2056: Consider using Assert.EnterMultipleScope statement instead of Assert.Multiple/Assert.MultipleAsync
+dotnet_diagnostic.NUnit2056.severity = warning
+

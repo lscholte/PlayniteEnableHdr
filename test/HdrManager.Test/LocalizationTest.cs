@@ -28,13 +28,13 @@ namespace HdrManager.Test
         public void AllEnglishKeysExistInLocale(string locale)
         {
             ResourceDictionary localizedResources = LoadLocalizatedResources(locale);
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 foreach (var key in englishResources.Keys)
                 {
                     Assert.That(localizedResources, Does.ContainKey(key));
                 }
-            });
+            }
         }
 
         private ResourceDictionary LoadLocalizatedResources(string locale)
