@@ -85,7 +85,7 @@ namespace HdrManager
 
         public Tag CreateOrUpdateHdrExclusionTag(string name)
         {
-            Tag tag = HdrExclusionTag;
+            Tag? tag = HdrExclusionTag;
             if (tag == null)
             {
                 logger.Info("Creating HDR Exclusion tag");
@@ -107,7 +107,7 @@ namespace HdrManager
             return tag;
         }
 
-        private Tag HdrExclusionTag
+        private Tag? HdrExclusionTag
         {
             get
             {
