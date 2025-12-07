@@ -103,6 +103,8 @@ namespace HdrManager.Test
             {
                 Directory.Delete(extensionDataPath, true);
             }
+
+            plugin.Dispose();
         }
 
             [Test]
