@@ -3,7 +3,6 @@ using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using Playnite.SDK;
-using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -13,57 +12,57 @@ namespace HdrManager.Test
     [TestFixture]
     public class SystemHdrManagerTest
     {
-        private List<Tag> backingTagList;
-        private List<Game> backingGameList;
-        private List<GameFeature> backingFeatureList;
+        private List<Tag> _backingTagList;
+        private List<Game> _backingGameList;
+        private List<GameFeature> _backingFeatureList;
 
-        private Mock<IItemCollection<Tag>> mockTagCollection;
-        private Mock<IItemCollection<Game>> mockGameCollection;
-        private Mock<IItemCollection<GameFeature>> mockFeatureCollection;
+        private Mock<IItemCollection<Tag>> _mockTagCollection;
+        private Mock<IItemCollection<Game>> _mockGameCollection;
+        private Mock<IItemCollection<GameFeature>> _mockFeatureCollection;
 
-        private Mock<IGameDatabaseAPI> mockGameDatabaseApi;
-        private Mock<IPlayniteAPI> mockPlayniteApi;
+        private Mock<IGameDatabaseAPI> _mockGameDatabaseApi;
+        private Mock<IPlayniteAPI> _mockPlayniteApi;
 
-        private SystemHdrManager systemHdrManager;
+        private SystemHdrManager _systemHdrManager;
 
         [SetUp]
         public void SetUp()
         {
-            backingTagList = new List<Tag>();
-            mockTagCollection = new Mock<IItemCollection<Tag>>();
-            mockTagCollection
+            _backingTagList = new List<Tag>();
+            _mockTagCollection = new Mock<IItemCollection<Tag>>();
+            _mockTagCollection
                 .Setup(mock => mock.GetEnumerator())
-                .Returns(() => backingTagList.GetEnumerator());
+                .Returns(() => _backingTagList.GetEnumerator());
 
-            backingGameList = new List<Game>();
-            mockGameCollection = new Mock<IItemCollection<Game>>();
-            mockGameCollection
+            _backingGameList = new List<Game>();
+            _mockGameCollection = new Mock<IItemCollection<Game>>();
+            _mockGameCollection
                 .Setup(mock => mock.GetEnumerator())
-                .Returns(() => backingGameList.GetEnumerator());
+                .Returns(() => _backingGameList.GetEnumerator());
 
-            backingFeatureList = new List<GameFeature>();
-            mockFeatureCollection = new Mock<IItemCollection<GameFeature>>();
-            mockFeatureCollection
+            _backingFeatureList = new List<GameFeature>();
+            _mockFeatureCollection = new Mock<IItemCollection<GameFeature>>();
+            _mockFeatureCollection
                 .Setup(mock => mock.GetEnumerator())
-                .Returns(() => backingFeatureList.GetEnumerator());
+                .Returns(() => _backingFeatureList.GetEnumerator());
 
-            mockGameDatabaseApi = new Mock<IGameDatabaseAPI>();
-            mockGameDatabaseApi
+            _mockGameDatabaseApi = new Mock<IGameDatabaseAPI>();
+            _mockGameDatabaseApi
                 .SetupGet(mock => mock.Tags)
-                .Returns(mockTagCollection.Object);
-            mockGameDatabaseApi
+                .Returns(_mockTagCollection.Object);
+            _mockGameDatabaseApi
                 .SetupGet(mock => mock.Games)
-                .Returns(mockGameCollection.Object);
-            mockGameDatabaseApi
+                .Returns(_mockGameCollection.Object);
+            _mockGameDatabaseApi
                 .SetupGet(mock => mock.Features)
-                .Returns(mockFeatureCollection.Object);
+                .Returns(_mockFeatureCollection.Object);
 
-            mockPlayniteApi = new Mock<IPlayniteAPI>();
-            mockPlayniteApi
+            _mockPlayniteApi = new Mock<IPlayniteAPI>();
+            _mockPlayniteApi
                 .SetupGet(mock => mock.Database)
-                .Returns(mockGameDatabaseApi.Object);
+                .Returns(_mockGameDatabaseApi.Object);
 
-            systemHdrManager = new SystemHdrManager(mockPlayniteApi.Object);
+            _systemHdrManager = new SystemHdrManager(_mockPlayniteApi.Object);
         }
 
         [TestCase("HDR")]
@@ -77,10 +76,10 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithEnableSystemHdr(false).WithFeatureIds(feature.Id).Build();
 
-            backingGameList.Add(game);
-            backingFeatureList.Add(feature);
+            _backingGameList.Add(game);
+            _backingFeatureList.Add(feature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.True);
         }
@@ -96,10 +95,10 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithEnableSystemHdr(false).WithFeatureIds(feature.Id).Build();
 
-            backingGameList.Add(game);
-            backingFeatureList.Add(feature);
+            _backingGameList.Add(game);
+            _backingFeatureList.Add(feature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.False);
         }
@@ -115,10 +114,10 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithEnableSystemHdr(true).WithFeatureIds(feature.Id).Build();
 
-            backingGameList.Add(game);
-            backingFeatureList.Add(feature);
+            _backingGameList.Add(game);
+            _backingFeatureList.Add(feature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.True);
         }
@@ -148,13 +147,13 @@ namespace HdrManager.Test
                 new GameBuilder().WithName("F").WithEnableSystemHdr(false).WithFeatureIds(nonHdrFeature.Id).Build(),
             };
 
-            backingGameList.AddRange(hdrGames);
-            backingGameList.AddRange(nonHdrGames);
+            _backingGameList.AddRange(hdrGames);
+            _backingGameList.AddRange(nonHdrGames);
 
-            backingFeatureList.Add(hdrFeature);
-            backingFeatureList.Add(nonHdrFeature);
+            _backingFeatureList.Add(hdrFeature);
+            _backingFeatureList.Add(nonHdrFeature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             using (Assert.EnterMultipleScope())
             {
@@ -179,10 +178,10 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithEnableSystemHdr(false).WithFeatureIds(feature.Id).WithTagIds(Guid.NewGuid()).Build();
 
-            backingGameList.Add(game);
-            backingFeatureList.Add(feature);
+            _backingGameList.Add(game);
+            _backingFeatureList.Add(feature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.True);
         }
@@ -197,10 +196,10 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithEnableSystemHdr(false).WithFeatureIds(feature.Id).WithTagIds(SystemHdrManager.HdrExclusionTagId).Build();
 
-            backingGameList.Add(game);
-            backingFeatureList.Add(feature);
+            _backingGameList.Add(game);
+            _backingFeatureList.Add(feature);
 
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.False);
         }
@@ -211,9 +210,9 @@ namespace HdrManager.Test
         {
             var games = new List<Game>();
 
-            systemHdrManager.SetSystemHdrForGames(games, enableSystemHdr);
+            _systemHdrManager.SetSystemHdrForGames(games, enableSystemHdr);
 
-            mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
+            _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
         }
 
         [TestCase(true)]
@@ -226,7 +225,7 @@ namespace HdrManager.Test
                 new GameBuilder().WithName("B").WithEnableSystemHdr(!enableSystemHdr).Build(),
             };
 
-            systemHdrManager.SetSystemHdrForGames(games, enableSystemHdr);
+            _systemHdrManager.SetSystemHdrForGames(games, enableSystemHdr);
 
             using (Assert.EnterMultipleScope())
             {
@@ -234,7 +233,7 @@ namespace HdrManager.Test
                 {
                     Assert.That(game.EnableSystemHdr, Is.EqualTo(enableSystemHdr), $"Game {game.Name} has EnableSystemHdr set to {!enableSystemHdr} but expected {enableSystemHdr}");
                 }
-                mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
+                _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
             }
         }
 
@@ -243,9 +242,9 @@ namespace HdrManager.Test
         {
             var games = new List<Game>();
 
-            systemHdrManager.AddHdrExclusionTagToGames(games);
+            _systemHdrManager.AddHdrExclusionTagToGames(games);
 
-            mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
+            _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
         }
 
         [Test]
@@ -259,9 +258,9 @@ namespace HdrManager.Test
                 new GameBuilder().Build()
             };
 
-            systemHdrManager.AddHdrExclusionTagToGames(games);
+            _systemHdrManager.AddHdrExclusionTagToGames(games);
 
-            mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
+            _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
         }
 
         [Test]
@@ -269,7 +268,7 @@ namespace HdrManager.Test
         {
             Game game = new GameBuilder().WithTagIds(SystemHdrManager.HdrExclusionTagId).Build();
 
-            systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
+            _systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
             Assert.That(game.TagIds, Has.One.Items);
@@ -283,7 +282,7 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithTagIds(tagIdA, tagIdB, SystemHdrManager.HdrExclusionTagId).Build();
 
-            systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
+            _systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
             Assert.That(game.TagIds, Does.Contain(tagIdA));
@@ -296,7 +295,7 @@ namespace HdrManager.Test
         {
             Game game = new GameBuilder().WithTagIds().Build();
 
-            systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
+            _systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
             Assert.That(game.TagIds, Has.One.Items);
@@ -307,7 +306,7 @@ namespace HdrManager.Test
         {
             Game game = new GameBuilder().Build();
 
-            systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
+            _systemHdrManager.AddHdrExclusionTagToGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Does.Contain(SystemHdrManager.HdrExclusionTagId));
             Assert.That(game.TagIds, Has.One.Items);
@@ -318,9 +317,9 @@ namespace HdrManager.Test
         {
             var games = new List<Game>();
 
-            systemHdrManager.RemoveHdrExclusionTagFromGames(games);
+            _systemHdrManager.RemoveHdrExclusionTagFromGames(games);
 
-            mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
+            _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Never);
         }
 
         [Test]
@@ -334,9 +333,9 @@ namespace HdrManager.Test
                 new GameBuilder().Build()
             };
 
-            systemHdrManager.RemoveHdrExclusionTagFromGames(games);
+            _systemHdrManager.RemoveHdrExclusionTagFromGames(games);
 
-            mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
+            _mockGameCollection.Verify(mock => mock.Update(It.IsAny<Game>()), Times.Exactly(games.Count));
         }
 
         [Test]
@@ -347,7 +346,7 @@ namespace HdrManager.Test
 
             Game game = new GameBuilder().WithTagIds(tagIdA, tagIdB, SystemHdrManager.HdrExclusionTagId).Build();
 
-            systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
+            _systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Does.Contain(tagIdA));
             Assert.That(game.TagIds, Does.Contain(tagIdB));
@@ -359,7 +358,7 @@ namespace HdrManager.Test
         {
             Game game = new GameBuilder().WithTagIds().Build();
 
-            systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
+            _systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Is.Null.Or.Empty);
         }
@@ -369,7 +368,7 @@ namespace HdrManager.Test
         {
             Game game = new GameBuilder().Build();
 
-            systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
+            _systemHdrManager.RemoveHdrExclusionTagFromGames(new List<Game> { game });
 
             Assert.That(game.TagIds, Is.Null.Or.Empty);
         }
@@ -379,7 +378,7 @@ namespace HdrManager.Test
         {
             string expectedTagName = "HDR Exclusion Tag";
 
-            Tag tag = systemHdrManager.CreateOrUpdateHdrExclusionTag(expectedTagName);
+            Tag tag = _systemHdrManager.CreateOrUpdateHdrExclusionTag(expectedTagName);
 
             Assert.That(tag, Is.Not.Null);
             Assert.That(tag.Name, Is.EqualTo(expectedTagName));
@@ -394,10 +393,10 @@ namespace HdrManager.Test
                 Id = SystemHdrManager.HdrExclusionTagId
             };
 
-            backingTagList.Add(existingTag);
+            _backingTagList.Add(existingTag);
 
             string expectedTagName = "New Name";
-            Tag tag = systemHdrManager.CreateOrUpdateHdrExclusionTag(expectedTagName);
+            Tag tag = _systemHdrManager.CreateOrUpdateHdrExclusionTag(expectedTagName);
 
             Assert.That(tag, Is.SameAs(existingTag));
             Assert.That(tag.Name, Is.EqualTo(expectedTagName));

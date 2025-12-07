@@ -6,40 +6,40 @@ namespace HdrManager.Test.Helpers
 {
     public class GameBuilder
     {
-        private readonly Game game;
+        private readonly Game _game;
 
         public GameBuilder()
         {
-            game = new Game();
+            _game = new Game();
         }
 
         public GameBuilder WithName(string name)
         {
-            game.Name = name;
+            _game.Name = name;
             return this;
         }
 
         public GameBuilder WithEnableSystemHdr(bool enableSystemHdr)
         {
-            game.EnableSystemHdr = enableSystemHdr;
+            _game.EnableSystemHdr = enableSystemHdr;
             return this;
         }
 
         public GameBuilder WithTagIds(params Guid[] tagIds)
         {
-            game.TagIds = tagIds.ToList();
+            _game.TagIds = tagIds.ToList();
             return this;
         }
 
         public GameBuilder WithFeatureIds(params Guid[] featureIds)
         {
-            game.FeatureIds = featureIds.ToList();
+            _game.FeatureIds = featureIds.ToList();
             return this;
         }
 
         public Game Build()
         {
-            return game;
+            return _game;
         }
     }
 }

@@ -166,6 +166,8 @@ dotnet_diagnostic.IDE0059.severity = warning
 # Formatting rule (IDE0055)
 dotnet_diagnostic.IDE0055.severity = warning
 
+dotnet_diagnostic.IDE1006.severity = warning
+
 # --------------------------------------------
 # NUnit Rules
 # --------------------------------------------
@@ -175,7 +177,6 @@ dotnet_diagnostic.NUnit2056.severity = warning
 
 # NUnit1028: The non-test method is public
 dotnet_diagnostic.NUnit1028.severity = warning
-
 
 # --------------------------------------------
 # Other Rules
@@ -196,3 +197,15 @@ dotnet_naming_symbols.interfaces.applicable_kinds = interface
 
 dotnet_naming_style.prefix_I_pascal_case.required_prefix = I
 dotnet_naming_style.prefix_I_pascal_case.capitalization = pascal_case
+
+# Private field naming conventions
+dotnet_naming_rule.private_fields_should_have_prefix.severity = warning
+dotnet_naming_rule.private_fields_should_have_prefix.symbols = private_fields
+dotnet_naming_rule.private_fields_should_have_prefix.style = prefix_underscore
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers = 
+
+dotnet_naming_style.prefix_underscore.required_prefix = _
+dotnet_naming_style.prefix_underscore.capitalization = camel_case

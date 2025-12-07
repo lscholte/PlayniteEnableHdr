@@ -8,18 +8,18 @@ namespace HdrManager.Test
     [TestFixture]
     internal class LocalizationTest
     {
-        private ResourceDictionary englishResources;
+        private ResourceDictionary _englishResources;
 
         [SetUp]
         public void Setup()
         {
-            englishResources = LoadLocalizatedResources("en_US");
+            _englishResources = LoadLocalizatedResources("en_US");
         }
 
         [Test]
         public void EnglishHasStrings()
         {
-            Assert.That(englishResources, Has.Count.AtLeast(1));
+            Assert.That(_englishResources, Has.Count.AtLeast(1));
         }
 
         [TestCase("es_ES")]
@@ -30,7 +30,7 @@ namespace HdrManager.Test
             ResourceDictionary localizedResources = LoadLocalizatedResources(locale);
             using (Assert.EnterMultipleScope())
             {
-                foreach (var key in englishResources.Keys)
+                foreach (var key in _englishResources.Keys)
                 {
                     Assert.That(localizedResources, Does.ContainKey(key));
                 }

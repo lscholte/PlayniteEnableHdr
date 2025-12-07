@@ -5,11 +5,11 @@ namespace HdrManager
 {
     public class PluginSettings : IPluginSettings
     {
-        private readonly Plugin plugin;
+        private readonly Plugin _plugin;
 
         public PluginSettings(Plugin plugin)
         {
-            this.plugin = plugin;
+            _plugin = plugin;
 
             var savedSettings = plugin.LoadPluginSettings<PluginSettings>();
             if (savedSettings != null)
@@ -30,7 +30,7 @@ namespace HdrManager
 
         public void EndEdit()
         {
-            plugin.SavePluginSettings(this);
+            _plugin.SavePluginSettings(this);
         }
 
         public bool VerifySettings(out List<string> errors)

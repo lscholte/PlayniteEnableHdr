@@ -9,21 +9,21 @@ namespace HdrManager.Test.Extensions
     [TestFixture]
     public class GameExtensionsTest
     {
-        private static readonly Guid hdrFeatureA = Guid.NewGuid();
-        private static readonly Guid hdrFeatureB = Guid.NewGuid();
-        private static readonly Guid hdrFeatureC = Guid.NewGuid();
+        private static readonly Guid _hdrFeatureA = Guid.NewGuid();
+        private static readonly Guid _hdrFeatureB = Guid.NewGuid();
+        private static readonly Guid _hdrFeatureC = Guid.NewGuid();
 
-        private static readonly IEnumerable<Guid> hdrFeatures = new List<Guid>
+        private static readonly IEnumerable<Guid> _hdrFeatures = new List<Guid>
         {
-            hdrFeatureA,
-            hdrFeatureB,
-            hdrFeatureC
+            _hdrFeatureA,
+            _hdrFeatureB,
+            _hdrFeatureC
         };
 
-        private static readonly Guid miscellaneousFeature = Guid.NewGuid();
+        private static readonly Guid _miscellaneousFeature = Guid.NewGuid();
 
-        private static readonly Guid hdrExclusionTag = Guid.NewGuid();
-        private static readonly Guid miscellaneousTag = Guid.NewGuid();
+        private static readonly Guid _hdrExclusionTag = Guid.NewGuid();
+        private static readonly Guid _miscellaneousTag = Guid.NewGuid();
 
         [Test]
         public void HasHdrFeature_ReturnsFalse_WhenGameHasNullFeatures()
@@ -33,7 +33,7 @@ namespace HdrManager.Test.Extensions
                 FeatureIds = null
             };
 
-            bool result = game.HasHdrFeature(hdrFeatures);
+            bool result = game.HasHdrFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
@@ -46,7 +46,7 @@ namespace HdrManager.Test.Extensions
                 FeatureIds = new List<Guid>()
             };
 
-            bool result = game.HasHdrFeature(hdrFeatures);
+            bool result = game.HasHdrFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
@@ -58,11 +58,11 @@ namespace HdrManager.Test.Extensions
             {
                 FeatureIds = new List<Guid>
                 {
-                    miscellaneousFeature
+                    _miscellaneousFeature
                 }
             };
 
-            bool result = game.HasHdrFeature(hdrFeatures);
+            bool result = game.HasHdrFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
@@ -74,12 +74,12 @@ namespace HdrManager.Test.Extensions
             {
                 FeatureIds = new List<Guid>
                 {
-                    hdrFeatureA,
-                    miscellaneousFeature
+                    _hdrFeatureA,
+                    _miscellaneousFeature
                 }
             };
 
-            bool result = game.HasHdrFeature(hdrFeatures);
+            bool result = game.HasHdrFeature(_hdrFeatures);
 
             Assert.That(result, Is.True);
         }
@@ -91,13 +91,13 @@ namespace HdrManager.Test.Extensions
             {
                 FeatureIds = new List<Guid>
                 {
-                    hdrFeatureA,
-                    hdrFeatureB,
-                    miscellaneousFeature
+                    _hdrFeatureA,
+                    _hdrFeatureB,
+                    _miscellaneousFeature
                 }
             };
 
-            bool result = game.HasHdrFeature(hdrFeatures);
+            bool result = game.HasHdrFeature(_hdrFeatures);
 
             Assert.That(result, Is.True);
         }
@@ -110,7 +110,7 @@ namespace HdrManager.Test.Extensions
                 TagIds = null
             };
 
-            bool result = game.HasHdrExclusionTag(hdrExclusionTag);
+            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
@@ -123,7 +123,7 @@ namespace HdrManager.Test.Extensions
                 TagIds = new List<Guid>()
             };
 
-            bool result = game.HasHdrExclusionTag(hdrExclusionTag);
+            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
@@ -135,11 +135,11 @@ namespace HdrManager.Test.Extensions
             {
                 TagIds = new List<Guid>
                 {
-                    miscellaneousTag
+                    _miscellaneousTag
                 }
             };
 
-            bool result = game.HasHdrExclusionTag(hdrExclusionTag);
+            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
@@ -151,12 +151,12 @@ namespace HdrManager.Test.Extensions
             {
                 TagIds = new List<Guid>
                 {
-                    hdrExclusionTag,
-                    miscellaneousTag
+                    _hdrExclusionTag,
+                    _miscellaneousTag
                 }
             };
 
-            bool result = game.HasHdrExclusionTag(hdrExclusionTag);
+            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
 
             Assert.That(result, Is.True);
         }
@@ -169,11 +169,11 @@ namespace HdrManager.Test.Extensions
                 TagIds = null
             };
 
-            game.AddTag(hdrExclusionTag);
+            game.AddTag(_hdrExclusionTag);
 
             Assert.That(game.TagIds, Is.Not.Null);
             Assert.That(game.TagIds, Has.One.Items);
-            Assert.That(game.TagIds, Contains.Item(hdrExclusionTag));
+            Assert.That(game.TagIds, Contains.Item(_hdrExclusionTag));
         }
 
         [Test]
@@ -184,11 +184,11 @@ namespace HdrManager.Test.Extensions
                 TagIds = new List<Guid>()
             };
 
-            game.AddTag(hdrExclusionTag);
+            game.AddTag(_hdrExclusionTag);
 
             Assert.That(game.TagIds, Is.Not.Null);
             Assert.That(game.TagIds, Has.One.Items);
-            Assert.That(game.TagIds, Contains.Item(hdrExclusionTag));
+            Assert.That(game.TagIds, Contains.Item(_hdrExclusionTag));
         }
 
         [Test]
@@ -198,16 +198,16 @@ namespace HdrManager.Test.Extensions
             {
                 TagIds = new List<Guid>
                 {
-                    miscellaneousTag
+                    _miscellaneousTag
                 }
             };
 
-            game.AddTag(hdrExclusionTag);
+            game.AddTag(_hdrExclusionTag);
 
             Assert.That(game.TagIds, Is.Not.Null);
             Assert.That(game.TagIds, Has.Exactly(2).Items);
-            Assert.That(game.TagIds, Contains.Item(miscellaneousTag));
-            Assert.That(game.TagIds, Contains.Item(hdrExclusionTag));
+            Assert.That(game.TagIds, Contains.Item(_miscellaneousTag));
+            Assert.That(game.TagIds, Contains.Item(_hdrExclusionTag));
         }
 
         [Test]
@@ -217,15 +217,15 @@ namespace HdrManager.Test.Extensions
             {
                 TagIds = new List<Guid>
                 {
-                    hdrExclusionTag
+                    _hdrExclusionTag
                 }
             };
 
-            game.AddTag(hdrExclusionTag);
+            game.AddTag(_hdrExclusionTag);
 
             Assert.That(game.TagIds, Is.Not.Null);
             Assert.That(game.TagIds, Has.One.Items);
-            Assert.That(game.TagIds, Contains.Item(hdrExclusionTag));
+            Assert.That(game.TagIds, Contains.Item(_hdrExclusionTag));
         }
     }
 }

@@ -15,8 +15,8 @@ namespace HdrManager
     {
         #region Private Fields
 
-        private readonly IPluginSettings pluginSettings;
-        private readonly ISystemHdrManager systemHdrManager;
+        private readonly IPluginSettings _pluginSettings;
+        private readonly ISystemHdrManager _systemHdrManager;
 
         #endregion
 
@@ -34,8 +34,8 @@ namespace HdrManager
             {
                 HasSettings = true
             };
-            this.pluginSettings = pluginSettings ?? new PluginSettings(this);
-            this.systemHdrManager = systemHdrManager ?? new SystemHdrManager(api);
+            _pluginSettings = pluginSettings ?? new PluginSettings(this);
+            _systemHdrManager = systemHdrManager ?? new SystemHdrManager(api);
         }
 
         #endregion
@@ -52,7 +52,7 @@ namespace HdrManager
 
         public override ISettings GetSettings(bool firstRunSettings)
         {
-            return pluginSettings;
+            return _pluginSettings;
         }
 
         public override UserControl GetSettingsView(bool firstRunView)
@@ -62,14 +62,14 @@ namespace HdrManager
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
-            systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
+            _systemHdrManager.EnableSystemHdrForManagedGames();
             ShowPcGamingWikiWarning();
         }
 
         public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
         {
-            systemHdrManager.EnableSystemHdrForManagedGames();
+            _systemHdrManager.EnableSystemHdrForManagedGames();
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
@@ -80,7 +80,7 @@ namespace HdrManager
                 {
                     Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuRemoveExclusionTag),
                     MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => systemHdrManager.RemoveHdrExclusionTagFromGames(a.Games)
+                    Action = (a) => _systemHdrManager.RemoveHdrExclusionTagFromGames(a.Games)
                 };
             }
             else
@@ -91,8 +91,8 @@ namespace HdrManager
                     MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
                     Action = (a) =>
                     {
-                        systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
-                        systemHdrManager.AddHdrExclusionTagToGames(a.Games);
+                        _systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
+                        _systemHdrManager.AddHdrExclusionTagToGames(a.Games);
                     }
                 };
             }
@@ -103,7 +103,7 @@ namespace HdrManager
                 {
                     Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuDisableHdrSupport),
                     MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => systemHdrManager.SetSystemHdrForGames(a.Games, false)
+                    Action = (a) => _systemHdrManager.SetSystemHdrForGames(a.Games, false)
                 };
             }
             else
@@ -112,7 +112,7 @@ namespace HdrManager
                 {
                     Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuEnableHdrSupport),
                     MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => systemHdrManager.SetSystemHdrForGames(a.Games, true)
+                    Action = (a) => _systemHdrManager.SetSystemHdrForGames(a.Games, true)
                 };
             }
         }
@@ -123,7 +123,7 @@ namespace HdrManager
             {
                 Description = PlayniteApi.Resources.GetString(LocalizationKeys.ExtensionMenuRunHdrActivation),
                 MenuSection = "@",
-                Action = _ => systemHdrManager.EnableSystemHdrForManagedGames()
+                Action = _ => _systemHdrManager.EnableSystemHdrForManagedGames()
             };
         }
 
@@ -133,7 +133,7 @@ namespace HdrManager
 
         private void ShowPcGamingWikiWarning()
         {
-            if (!pluginSettings.IsPCGamingWikiWarningSuppressed &&
+            if (!_pluginSettings.IsPCGamingWikiWarningSuppressed &&
                 !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == PCGamingWikiPluginId))
             {
                 var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString(LocalizationKeys.DialogResponseOK), true, true);
@@ -152,9 +152,9 @@ namespace HdrManager
                     options);
                 if (response == suppressWarningResponse)
                 {
-                    pluginSettings.BeginEdit();
-                    pluginSettings.IsPCGamingWikiWarningSuppressed = true;
-                    pluginSettings.EndEdit();
+                    _pluginSettings.BeginEdit();
+                    _pluginSettings.IsPCGamingWikiWarningSuppressed = true;
+                    _pluginSettings.EndEdit();
                 }
             }
         }

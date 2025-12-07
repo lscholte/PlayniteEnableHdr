@@ -16,56 +16,56 @@ namespace HdrManager.Test
     [TestFixture]
     public class PluginTest
     {
-        private Mock<IResourceProvider> mockResourceProvider;
-        private Mock<IDialogsFactory> mockDialogsFactory;
-        private Mock<IAddons> mockAddons;
-        private Mock<IPlayniteAPI> mockPlayniteApi;
+        private Mock<IResourceProvider> _mockResourceProvider;
+        private Mock<IDialogsFactory> _mockDialogsFactory;
+        private Mock<IAddons> _mockAddons;
+        private Mock<IPlayniteAPI> _mockPlayniteApi;
 
-        private Mock<IPluginSettings> mockPluginSettings;
-        private Mock<ISystemHdrManager> mockSystemHdrManager;
+        private Mock<IPluginSettings> _mockPluginSettings;
+        private Mock<ISystemHdrManager> _mockSystemHdrManager;
 
-        private Game gameWithHdrExclusionTag;
-        private Game gameWithoutHdrExclusionTag;
+        private Game _gameWithHdrExclusionTag;
+        private Game _gameWithoutHdrExclusionTag;
 
-        private Game gameWithSystemHdrEnabled;
-        private Game gameWithSystemHdrDisabled;
+        private Game _gameWithSystemHdrEnabled;
+        private Game _gameWithSystemHdrDisabled;
 
-        private Plugin plugin;
+        private Plugin _plugin;
 
         [SetUp]
         public void SetUp()
         {
-            mockResourceProvider = new Mock<IResourceProvider>();
-            mockResourceProvider
+            _mockResourceProvider = new Mock<IResourceProvider>();
+            _mockResourceProvider
                 .Setup(mock => mock.GetString(It.IsAny<string>()))
                 .Returns((string key) => key);
 
-            mockDialogsFactory = new Mock<IDialogsFactory>();
+            _mockDialogsFactory = new Mock<IDialogsFactory>();
 
-            mockAddons = new Mock<IAddons>();
+            _mockAddons = new Mock<IAddons>();
 
-            mockPlayniteApi = new Mock<IPlayniteAPI>();
-            mockPlayniteApi
+            _mockPlayniteApi = new Mock<IPlayniteAPI>();
+            _mockPlayniteApi
                 .SetupGet(mock => mock.Resources)
-                .Returns(mockResourceProvider.Object);
-            mockPlayniteApi
+                .Returns(_mockResourceProvider.Object);
+            _mockPlayniteApi
                 .SetupGet(mock => mock.Dialogs)
-                .Returns(mockDialogsFactory.Object);
-            mockPlayniteApi
+                .Returns(_mockDialogsFactory.Object);
+            _mockPlayniteApi
                 .SetupGet(mock => mock.Addons)
-                .Returns(mockAddons.Object);
+                .Returns(_mockAddons.Object);
 
-            mockPluginSettings = new Mock<IPluginSettings>();
-            mockPluginSettings.SetupAllProperties();
+            _mockPluginSettings = new Mock<IPluginSettings>();
+            _mockPluginSettings.SetupAllProperties();
 
-            mockSystemHdrManager = new Mock<ISystemHdrManager>();
+            _mockSystemHdrManager = new Mock<ISystemHdrManager>();
 
-            gameWithoutHdrExclusionTag = new Game
+            _gameWithoutHdrExclusionTag = new Game
             {
                 TagIds = new List<Guid>()
             };
 
-            gameWithHdrExclusionTag = new Game
+            _gameWithHdrExclusionTag = new Game
             {
                 TagIds = new List<Guid>()
                 {
@@ -73,36 +73,36 @@ namespace HdrManager.Test
                 }
             };
 
-            gameWithSystemHdrEnabled = new Game
+            _gameWithSystemHdrEnabled = new Game
             {
                 EnableSystemHdr = true
             };
 
-            gameWithSystemHdrDisabled = new Game
+            _gameWithSystemHdrDisabled = new Game
             {
                 EnableSystemHdr = false
             };
 
-            plugin = new Plugin(mockPlayniteApi.Object, mockPluginSettings.Object, mockSystemHdrManager.Object);
+            _plugin = new Plugin(_mockPlayniteApi.Object, _mockPluginSettings.Object, _mockSystemHdrManager.Object);
         }
 
         [TearDown]
         public void TearDown()
         {
-            plugin.Dispose();
+            _plugin.Dispose();
         }
 
-            [Test]
+        [Test]
         public void GetGameMenuItems_SelectedSingleGameWithoutHdrExclusionTag_HasAddHdrExclusionMenuItem()
         {
-            var games = new List<Game> { gameWithoutHdrExclusionTag };
+            var games = new List<Game> { _gameWithoutHdrExclusionTag };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));
@@ -111,14 +111,14 @@ namespace HdrManager.Test
         [Test]
         public void GetGameMenuItems_SelectedSingleGameWithHdrExclusionTag_HasRemoveHdrExclusionMenuItem()
         {
-            var games = new List<Game> { gameWithHdrExclusionTag };
+            var games = new List<Game> { _gameWithHdrExclusionTag };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));
@@ -127,30 +127,30 @@ namespace HdrManager.Test
         [Test]
         public void GetGameMenuItems_MultipleGames_MixedExclusionTags_HasAddHdrExclusionMenuItem()
         {
-            var games = new List<Game> { gameWithoutHdrExclusionTag, gameWithHdrExclusionTag };
+            var games = new List<Game> { _gameWithoutHdrExclusionTag, _gameWithHdrExclusionTag };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuAddExclusionTag));
-            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));         
+            Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuRemoveExclusionTag));
         }
 
         [Test]
         public void GetGameMenuItems_SelectedSingleGameWithSystemHdrDisabled_HasEnableSystemHdrMenuItem()
         {
-            var games = new List<Game> { gameWithSystemHdrDisabled };
+            var games = new List<Game> { _gameWithSystemHdrDisabled };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
@@ -159,14 +159,14 @@ namespace HdrManager.Test
         [Test]
         public void GetGameMenuItems_SelectedSingleGameWithSystemHdrEnabled_HasDisableSystemHdrMenuItem()
         {
-            var games = new List<Game> { gameWithSystemHdrEnabled };
+            var games = new List<Game> { _gameWithSystemHdrEnabled };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
@@ -175,14 +175,14 @@ namespace HdrManager.Test
         [Test]
         public void GetGameMenuItems_MultipleGames_MixedSystemHdrStates_HasEnableSystemHdrMenuItem()
         {
-            var games = new List<Game> { gameWithSystemHdrDisabled, gameWithSystemHdrEnabled };
+            var games = new List<Game> { _gameWithSystemHdrDisabled, _gameWithSystemHdrEnabled };
 
             var menuItemsArgs = new GetGameMenuItemsArgs
             {
                 Games = games
             };
 
-            IEnumerable<GameMenuItem> menuItems = plugin.GetGameMenuItems(menuItemsArgs);
+            IEnumerable<GameMenuItem> menuItems = _plugin.GetGameMenuItems(menuItemsArgs);
 
             Assert.That(menuItems, Has.One.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuEnableHdrSupport));
             Assert.That(menuItems, Has.None.Matches<GameMenuItem>(item => item.Description == LocalizationKeys.ContextMenuDisableHdrSupport));
@@ -191,19 +191,19 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalled_WarningDialogIsShown()
         {
-            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(_mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
 
-            mockAddons
+            _mockAddons
                 .SetupGet(mock => mock.Plugins)
                 .Returns([mockPlugin.Object]);
             var applicationStartedArgs = new OnApplicationStartedEventArgs();
 
-            plugin.OnApplicationStarted(applicationStartedArgs);
+            _plugin.OnApplicationStarted(applicationStartedArgs);
 
-            mockDialogsFactory.Verify(
+            _mockDialogsFactory.Verify(
                 mock => mock.ShowMessage(
                     LocalizationKeys.PCGamingWikiDialogWarningMessage,
                     It.IsAny<string>(),
@@ -215,23 +215,23 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalled_WarningSupressed_WarningDialogIsNotShown()
         {
-            mockPluginSettings
+            _mockPluginSettings
                 .SetupGet(mock => mock.IsPCGamingWikiWarningSuppressed)
                 .Returns(true);
 
-            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(_mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
 
-            mockAddons
+            _mockAddons
                 .SetupGet(mock => mock.Plugins)
                 .Returns([mockPlugin.Object]);
             var applicationStartedArgs = new OnApplicationStartedEventArgs();
 
-            plugin.OnApplicationStarted(applicationStartedArgs);
+            _plugin.OnApplicationStarted(applicationStartedArgs);
 
-            mockDialogsFactory.Verify(
+            _mockDialogsFactory.Verify(
                 mock => mock.ShowMessage(
                     LocalizationKeys.PCGamingWikiDialogWarningMessage,
                     It.IsAny<string>(),
@@ -243,16 +243,16 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_SuppressWarningClicked_SettingIsSaved()
         {
-            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(_mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
 
-            mockAddons
+            _mockAddons
                 .SetupGet(mock => mock.Plugins)
                 .Returns([mockPlugin.Object]);
 
-            mockDialogsFactory
+            _mockDialogsFactory
                 .Setup(
                     mock => mock.ShowMessage(
                         LocalizationKeys.PCGamingWikiDialogWarningMessage,
@@ -265,9 +265,9 @@ namespace HdrManager.Test
                 });
 
             var applicationStartedArgs = new OnApplicationStartedEventArgs();
-            plugin.OnApplicationStarted(applicationStartedArgs);
+            _plugin.OnApplicationStarted(applicationStartedArgs);
 
-            var settings = plugin.GetSettings(false) as IPluginSettings;
+            var settings = _plugin.GetSettings(false) as IPluginSettings;
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.IsPCGamingWikiWarningSuppressed, Is.True);
@@ -276,16 +276,16 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_OKClicked_SettingIsNotSaved()
         {
-            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(_mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
 
-            mockAddons
+            _mockAddons
                 .SetupGet(mock => mock.Plugins)
                 .Returns([mockPlugin.Object]);
 
-            mockDialogsFactory
+            _mockDialogsFactory
                 .Setup(
                     mock => mock.ShowMessage(
                         LocalizationKeys.PCGamingWikiDialogWarningMessage,
@@ -298,9 +298,9 @@ namespace HdrManager.Test
                 });
 
             var applicationStartedArgs = new OnApplicationStartedEventArgs();
-            plugin.OnApplicationStarted(applicationStartedArgs);
+            _plugin.OnApplicationStarted(applicationStartedArgs);
 
-            var settings = plugin.GetSettings(false) as IPluginSettings;
+            var settings = _plugin.GetSettings(false) as IPluginSettings;
 
             Assert.That(settings, Is.Not.Null);
             Assert.That(settings.IsPCGamingWikiWarningSuppressed, Is.False);
@@ -309,19 +309,19 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiInstalled_WarningDialogIsNotShown()
         {
-            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(_mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Plugin.PCGamingWikiPluginId);
 
-            mockAddons
+            _mockAddons
                 .SetupGet(mock => mock.Plugins)
                 .Returns([mockPlugin.Object]);
             var applicationStartedArgs = new OnApplicationStartedEventArgs();
 
-            plugin.OnApplicationStarted(applicationStartedArgs);
+            _plugin.OnApplicationStarted(applicationStartedArgs);
 
-            mockDialogsFactory.Verify(
+            _mockDialogsFactory.Verify(
                 mock => mock.ShowMessage(
                     LocalizationKeys.PCGamingWikiDialogWarningMessage,
                     It.IsAny<string>(),
