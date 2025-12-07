@@ -80,8 +80,6 @@ namespace HdrManager.Test
             backingGameList.Add(game);
             backingFeatureList.Add(feature);
 
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
-
             systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.True);
@@ -101,8 +99,6 @@ namespace HdrManager.Test
             backingGameList.Add(game);
             backingFeatureList.Add(feature);
 
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
-
             systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.False);
@@ -121,8 +117,6 @@ namespace HdrManager.Test
 
             backingGameList.Add(game);
             backingFeatureList.Add(feature);
-
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
 
             systemHdrManager.EnableSystemHdrForManagedGames();
 
@@ -190,8 +184,6 @@ namespace HdrManager.Test
             backingGameList.Add(game);
             backingFeatureList.Add(feature);
 
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
-
             systemHdrManager.EnableSystemHdrForManagedGames();
 
             Assert.That(game.EnableSystemHdr, Is.True);
@@ -209,8 +201,6 @@ namespace HdrManager.Test
 
             backingGameList.Add(game);
             backingFeatureList.Add(feature);
-
-            var libraryUpdatedArgs = new OnLibraryUpdatedEventArgs();
 
             systemHdrManager.EnableSystemHdrForManagedGames();
 

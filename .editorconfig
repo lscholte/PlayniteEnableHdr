@@ -1,4 +1,8 @@
 [*.cs]
+# --------------------------------------------
+# RCS Rules
+# --------------------------------------------
+
 # RCS1007: Add braces
 dotnet_diagnostic.RCS1007.severity = warning
 
@@ -152,3 +156,9 @@ dotnet_diagnostic.RCS1267.severity = warning
 # RCS1268: Simplify numeric comparison
 dotnet_diagnostic.RCS1268.severity = warning
 
+# --------------------------------------------
+# IDE Rules
+# --------------------------------------------
+
+# Remove unnecessary value assignment (IDE0059)
+dotnet_diagnostic.IDE0059.severity = warning
