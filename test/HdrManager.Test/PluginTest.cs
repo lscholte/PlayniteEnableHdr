@@ -273,6 +273,7 @@ namespace HdrManager.Test
             Assert.That(settings.IsPCGamingWikiWarningSuppressed, Is.True);
         }
 
+        [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_OKClicked_SettingIsNotSaved()
         {
             var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
