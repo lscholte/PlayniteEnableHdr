@@ -381,6 +381,7 @@ namespace HdrManager.Test
 
             Tag tag = systemHdrManager.CreateOrUpdateHdrExclusionTag(expectedTagName);
 
+            Assert.That(tag, Is.Not.Null);
             Assert.That(tag.Name, Is.EqualTo(expectedTagName));
             Assert.That(tag.Id, Is.EqualTo(SystemHdrManager.HdrExclusionTagId));
         }
