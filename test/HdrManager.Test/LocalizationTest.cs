@@ -2,18 +2,23 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Markup;
+using System.Collections.Generic;
+using System;
 
 namespace HdrManager.Test
 {
     [TestFixture]
     internal class LocalizationTest
     {
+        private const string _englishLocale = "en_US";
+        private const string _localizationDirectory = "Localization";
+
         private ResourceDictionary _englishResources;
 
         [SetUp]
         public void Setup()
         {
-            _englishResources = LoadLocalizatedResources("en_US");
+            _englishResources = LoadLocalizatedResources(_englishLocale);
         }
 
         [Test]
@@ -22,9 +27,7 @@ namespace HdrManager.Test
             Assert.That(_englishResources, Has.Count.AtLeast(1));
         }
 
-        [TestCase("es_ES")]
-        [TestCase("fr_FR")]
-        [TestCase("pt_PT")]
+        [TestCaseSource(nameof(GetLocales))]
         public void AllEnglishKeysExistInLocale(string locale)
         {
             ResourceDictionary localizedResources = LoadLocalizatedResources(locale);
@@ -37,14 +40,26 @@ namespace HdrManager.Test
             }
         }
 
-        private ResourceDictionary LoadLocalizatedResources(string locale)
+        private static ResourceDictionary LoadLocalizatedResources(string locale)
         {
-            var path = Path.GetFullPath($"Localization/{locale}.xaml");
-            Assert.That(File.Exists(path), $"File not found: {path}");
+            var localizationFilePath = Path.Combine(_localizationDirectory, $"{locale}.xaml");
+            Assert.That(File.Exists(localizationFilePath), $"File not found: {localizationFilePath}");
 
-            using (var stream = File.OpenRead(path))
+            using Stream stream = File.OpenRead(localizationFilePath);
+            return (ResourceDictionary)XamlReader.Load(stream);
+        }
+
+        private static IEnumerable<string> GetLocales()
+        {
+            foreach (var file in Directory.EnumerateFiles(_localizationDirectory, "*.xaml"))
             {
-                return (ResourceDictionary)XamlReader.Load(stream);
+                string locale = Path.GetFileNameWithoutExtension(file);
+                if (string.Equals(locale, _englishLocale))
+                {
+                    continue;
+                }
+
+                yield return locale;
             }
         }
     }
