@@ -23,25 +23,19 @@ namespace HdrManager
         #region Constructors
 
         public Plugin(IPlayniteAPI api)
-            : this(api, new SystemHdrManager(api))
+            : this(api, null, null)
         {
         }
 
-        public Plugin(IPlayniteAPI api, ISystemHdrManager systemHdrManager)
+        public Plugin(IPlayniteAPI api, IPluginSettings pluginSettings, ISystemHdrManager systemHdrManager)
             : base(api)
         {
             Properties = new GenericPluginProperties()
             {
                 HasSettings = true
             };
-            pluginSettings = new PluginSettings(this);
-            this.systemHdrManager = systemHdrManager;
-        }
-
-        public Plugin(IPlayniteAPI api, IPluginSettings pluginSettings, ISystemHdrManager systemHdrManager)
-            : this(api, systemHdrManager)
-        {
-            this.pluginSettings = pluginSettings;
+            this.pluginSettings = pluginSettings ?? new PluginSettings(this);
+            this.systemHdrManager = systemHdrManager ?? new SystemHdrManager(api);
         }
 
         #endregion

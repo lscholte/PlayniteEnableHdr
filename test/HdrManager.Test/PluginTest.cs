@@ -16,7 +16,6 @@ namespace HdrManager.Test
     [TestFixture]
     public class PluginTest
     {
-        private Mock<IPlaynitePathsAPI> mockPlaynitePathsApi;
         private Mock<IResourceProvider> mockResourceProvider;
         private Mock<IDialogsFactory> mockDialogsFactory;
         private Mock<IAddons> mockAddons;
@@ -36,11 +35,6 @@ namespace HdrManager.Test
         [SetUp]
         public void SetUp()
         {
-            mockPlaynitePathsApi = new Mock<IPlaynitePathsAPI>();
-            mockPlaynitePathsApi
-                .SetupGet(mock => mock.ExtensionsDataPath)
-                .Returns("PluginData");
-
             mockResourceProvider = new Mock<IResourceProvider>();
             mockResourceProvider
                 .Setup(mock => mock.GetString(It.IsAny<string>()))
@@ -51,9 +45,6 @@ namespace HdrManager.Test
             mockAddons = new Mock<IAddons>();
 
             mockPlayniteApi = new Mock<IPlayniteAPI>();
-            mockPlayniteApi
-                .SetupGet(mock => mock.Paths)
-                .Returns(mockPlaynitePathsApi.Object);
             mockPlayniteApi
                 .SetupGet(mock => mock.Resources)
                 .Returns(mockResourceProvider.Object);
@@ -98,12 +89,6 @@ namespace HdrManager.Test
         [TearDown]
         public void TearDown()
         {
-            string extensionDataPath = mockPlaynitePathsApi.Object.ExtensionsDataPath;
-            if (Directory.Exists(extensionDataPath))
-            {
-                Directory.Delete(extensionDataPath, true);
-            }
-
             plugin.Dispose();
         }
 
@@ -206,7 +191,7 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalled_WarningDialogIsShown()
         {
-            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
@@ -234,7 +219,7 @@ namespace HdrManager.Test
                 .SetupGet(mock => mock.IsPCGamingWikiWarningSuppressed)
                 .Returns(true);
 
-            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
@@ -258,7 +243,7 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_SuppressWarningClicked_SettingIsSaved()
         {
-            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
@@ -290,7 +275,7 @@ namespace HdrManager.Test
 
         public void OnApplicationStarted_PcGamingWikiNotInstalledDialog_OKClicked_SettingIsNotSaved()
         {
-            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Guid.NewGuid());
@@ -323,7 +308,7 @@ namespace HdrManager.Test
         [Test]
         public void OnApplicationStarted_PcGamingWikiInstalled_WarningDialogIsNotShown()
         {
-            var mockPlugin = new Mock<Plugin>(mockPlayniteApi.Object);
+            var mockPlugin = new Mock<Playnite.SDK.Plugins.Plugin>(mockPlayniteApi.Object);
             mockPlugin
                 .SetupGet(mock => mock.Id)
                 .Returns(Plugin.PCGamingWikiPluginId);
