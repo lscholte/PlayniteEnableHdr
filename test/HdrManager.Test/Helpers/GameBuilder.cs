@@ -6,7 +6,8 @@ namespace HdrManager.Test.Helpers
 {
     public class GameBuilder
     {
-        private Game game;
+        private readonly Game game;
+
         public GameBuilder()
         {
             game = new Game();

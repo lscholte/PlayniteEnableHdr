@@ -5,7 +5,7 @@ namespace HdrManager
 {
     public class PluginSettings : IPluginSettings
     {
-        private Plugin plugin;
+        private readonly Plugin plugin;
 
         public PluginSettings()
         {

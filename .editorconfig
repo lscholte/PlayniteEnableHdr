@@ -1,0 +1,154 @@
+[*.cs]
+# RCS1007: Add braces
+dotnet_diagnostic.RCS1007.severity = warning
+
+# RCS1015: Use nameof operator
+dotnet_diagnostic.RCS1015.severity = warning
+
+# RCS1032: Remove redundant parentheses
+dotnet_diagnostic.RCS1032.severity = warning
+
+# RCS1084: Use coalesce expression instead of conditional expression
+dotnet_diagnostic.RCS1084.severity = warning
+
+# RCS1073: Convert 'if' to 'return' statement
+dotnet_diagnostic.RCS1073.severity = warning
+
+# RCS1103: Convert 'if' to assignment
+dotnet_diagnostic.RCS1103.severity = warning
+
+# RCS1104: Simplify conditional expression
+dotnet_diagnostic.RCS1104.severity = warning
+
+# RCS1105: Unnecessary interpolation
+dotnet_diagnostic.RCS1105.severity = warning
+
+# RCS1113: Use 'string.IsNullOrEmpty' method
+dotnet_diagnostic.RCS1113.severity = warning
+
+# RCS1123: Add parentheses when necessary
+dotnet_diagnostic.RCS1123.severity = warning
+
+# RCS1132: Remove redundant overriding member
+dotnet_diagnostic.RCS1132.severity = warning
+
+# RCS1146: Use conditional access
+dotnet_diagnostic.RCS1146.severity = warning
+
+# RCS1157: Composite enum value contains undefined flag
+dotnet_diagnostic.RCS1157.severity = warning
+
+# RCS1159: Use EventHandler<T>
+dotnet_diagnostic.RCS1159.severity = warning
+
+# RCS1160: Abstract type should not have public constructors
+dotnet_diagnostic.RCS1160.severity = warning
+
+# RCS1163: Unused parameter
+dotnet_diagnostic.RCS1163.severity = warning
+
+# RCS1164: Unused type parameter
+dotnet_diagnostic.RCS1164.severity = warning
+
+# RCS1166: Value type object is never equal to null
+dotnet_diagnostic.RCS1166.severity = warning
+
+# RCS1169: Make field read-only
+dotnet_diagnostic.RCS1169.severity = warning
+
+# RCS1170: Use read-only auto-implemented property
+dotnet_diagnostic.RCS1170.severity = warning
+
+# RCS1173: Use coalesce expression instead of 'if'
+dotnet_diagnostic.RCS1173.severity = warning
+
+# RCS1175: Unused 'this' parameter
+dotnet_diagnostic.RCS1175.severity = warning
+
+# RCS1179: Unnecessary assignment
+dotnet_diagnostic.RCS1179.severity = warning
+
+# RCS1187: Use constant instead of field
+dotnet_diagnostic.RCS1187.severity = warning
+
+# RCS1191: Declare enum value as combination of names
+dotnet_diagnostic.RCS1191.severity = warning
+
+# RCS1196: Call extension method as instance method
+dotnet_diagnostic.RCS1196.severity = warning
+
+# RCS1197: Optimize StringBuilder.Append/AppendLine call
+dotnet_diagnostic.RCS1197.severity = warning
+
+# RCS1199: Unnecessary null check
+dotnet_diagnostic.RCS1199.severity = warning
+
+# RCS1200: Call 'Enumerable.ThenBy' instead of 'Enumerable.OrderBy'
+dotnet_diagnostic.RCS1200.severity = warning
+
+# RCS1202: Avoid NullReferenceException
+dotnet_diagnostic.RCS1202.severity = warning
+
+# RCS1204: Use EventArgs.Empty
+dotnet_diagnostic.RCS1204.severity = warning
+
+# RCS1206: Use conditional access instead of conditional expression
+dotnet_diagnostic.RCS1206.severity = warning
+
+# RCS1211: Remove unnecessary 'else'
+dotnet_diagnostic.RCS1211.severity = warning
+
+# RCS1212: Remove redundant assignment
+dotnet_diagnostic.RCS1212.severity = warning
+
+# RCS1214: Unnecessary interpolated string
+dotnet_diagnostic.RCS1214.severity = warning
+
+# RCS1218: Simplify code branching
+dotnet_diagnostic.RCS1218.severity = warning
+
+# RCS1220: Use pattern matching instead of combination of 'is' operator and cast operator
+dotnet_diagnostic.RCS1220.severity = warning
+
+# RCS1221: Use pattern matching instead of combination of 'as' operator and null check
+dotnet_diagnostic.RCS1221.severity = warning
+
+# RCS1224: Make method an extension method
+dotnet_diagnostic.RCS1224.severity = warning
+
+# RCS1225: Make class sealed
+dotnet_diagnostic.RCS1225.severity = warning
+
+# RCS1226: Add paragraph to documentation comment
+dotnet_diagnostic.RCS1226.severity = warning
+
+# RCS1230: Unnecessary explicit use of enumerator
+dotnet_diagnostic.RCS1230.severity = warning
+
+# RCS1232: Order elements in documentation comment
+dotnet_diagnostic.RCS1232.severity = warning
+
+# RCS1233: Use short-circuiting operator
+dotnet_diagnostic.RCS1233.severity = warning
+
+# RCS1238: Avoid nested ?: operators
+dotnet_diagnostic.RCS1238.severity = warning
+
+# RCS1239: Use 'for' statement instead of 'while' statement
+dotnet_diagnostic.RCS1239.severity = warning
+
+# RCS1247: Fix documentation comment tag
+dotnet_diagnostic.RCS1247.severity = warning
+
+# RCS1259: Remove empty syntax
+dotnet_diagnostic.RCS1259.severity = warning
+
+# RCS1265: Remove redundant catch block
+dotnet_diagnostic.RCS1265.severity = warning
+
+# RCS1267: Use string interpolation instead of 'string.Concat'
+dotnet_diagnostic.RCS1267.severity = warning
+
+# RCS1268: Simplify numeric comparison
+dotnet_diagnostic.RCS1268.severity = warning
+

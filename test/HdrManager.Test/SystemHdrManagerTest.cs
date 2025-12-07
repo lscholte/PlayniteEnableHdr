@@ -250,9 +250,8 @@ namespace HdrManager.Test
             });
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public void AddHdrExclusionTagToGames_NoGames_DoesNotUpdateGameDatabase(bool enableSystemHdr)
+        [Test]
+        public void AddHdrExclusionTagToGames_NoGames_DoesNotUpdateGameDatabase()
         {
             var games = new List<Game>();
 
@@ -326,9 +325,8 @@ namespace HdrManager.Test
             Assert.That(game.TagIds, Has.One.Items);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-        public void RemoveHdrExclusionTagFromGames_NoGames_DoesNotUpdateGameDatabase(bool enableSystemHdr)
+        [Test]
+        public void RemoveHdrExclusionTagFromGames_NoGames_DoesNotUpdateGameDatabase()
         {
             var games = new List<Game>();
 
