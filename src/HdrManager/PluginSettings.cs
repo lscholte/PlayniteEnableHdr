@@ -7,10 +7,6 @@ namespace HdrManager
     {
         private readonly Plugin plugin;
 
-        public PluginSettings()
-        {
-        }
-
         public PluginSettings(Plugin plugin)
         {
             this.plugin = plugin;

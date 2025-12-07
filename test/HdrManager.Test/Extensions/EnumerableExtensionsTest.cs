@@ -10,7 +10,7 @@ namespace HdrManager.Test.Extensions
         [Test]
         public void EmptyIfNull_ReturnsEmptyEnumerable_WhenInputIsNull()
         {
-            IEnumerable<int> input = null;
+            IEnumerable<int>? input = null;
 
             var result = input.EmptyIfNull();
 

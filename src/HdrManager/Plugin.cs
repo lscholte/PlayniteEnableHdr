@@ -27,7 +27,7 @@ namespace HdrManager
         {
         }
 
-        public Plugin(IPlayniteAPI api, IPluginSettings pluginSettings, ISystemHdrManager systemHdrManager)
+        public Plugin(IPlayniteAPI api, IPluginSettings? pluginSettings, ISystemHdrManager? systemHdrManager)
             : base(api)
         {
             Properties = new GenericPluginProperties()
