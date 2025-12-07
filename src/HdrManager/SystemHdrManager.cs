@@ -32,7 +32,8 @@ namespace HdrManager
                     .Database
                     .Features
                     .Where(f => HdrFeatureNames.Contains(f.Name))
-                    .Select(f => f.Id).ToList();
+                    .Select(f => f.Id)
+                    .ToList();
 
             List<Game> managedHdrGames = playniteApi
                     .Database
