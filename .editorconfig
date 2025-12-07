@@ -186,3 +186,13 @@ csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
+
+# Interface naming conventions
+dotnet_naming_rule.interfaces_should_have_prefix.severity = warning
+dotnet_naming_rule.interfaces_should_have_prefix.symbols = interfaces
+dotnet_naming_rule.interfaces_should_have_prefix.style = prefix_I_pascal_case
+
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+
+dotnet_naming_style.prefix_I_pascal_case.required_prefix = I
+dotnet_naming_style.prefix_I_pascal_case.capitalization = pascal_case
