@@ -103,33 +103,33 @@ namespace HdrManager.Test.Extensions
         }
 
         [Test]
-        public void HasHdrExclusionTag_ReturnsFalse_WhenGameHasNullTags()
+        public void HasTag_ReturnsFalse_WhenGameHasNullTags()
         {
             Game game = new Game
             {
                 TagIds = null
             };
 
-            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
+            bool result = game.HasTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrExclusionTag_ReturnsFalse_WhenGameHasEmptyTags()
+        public void HasTag_ReturnsFalse_WhenGameHasEmptyTags()
         {
             Game game = new Game
             {
                 TagIds = new List<Guid>()
             };
 
-            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
+            bool result = game.HasTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrExclusionTag_ReturnsFalse_WhenGameHasNoHdrExclusionTag()
+        public void HasTag_ReturnsFalse_WhenGameHasNoHdrExclusionTag()
         {
             Game game = new Game
             {
@@ -139,13 +139,13 @@ namespace HdrManager.Test.Extensions
                 }
             };
 
-            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
+            bool result = game.HasTag(_hdrExclusionTag);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrExclusionTag_ReturnsTrue_WhenGameHasHdrExclusionTag()
+        public void HasTag_ReturnsTrue_WhenGameHasHdrExclusionTag()
         {
             Game game = new Game
             {
@@ -156,7 +156,7 @@ namespace HdrManager.Test.Extensions
                 }
             };
 
-            bool result = game.HasHdrExclusionTag(_hdrExclusionTag);
+            bool result = game.HasTag(_hdrExclusionTag);
 
             Assert.That(result, Is.True);
         }

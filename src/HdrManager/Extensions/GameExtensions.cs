@@ -18,12 +18,12 @@ namespace HdrManager.Extensions
                 .Any();
         }
 
-        public static bool HasHdrExclusionTag(this Game game, Guid hdrExclusionTagId)
+        public static bool HasTag(this Game game, Guid tagId)
         {
             return game
                 .TagIds
                 .EmptyIfNull()
-                .Contains(hdrExclusionTagId);
+                .Contains(tagId);
         }
 
         public static void AddTag(this Game game, Guid tagId)
