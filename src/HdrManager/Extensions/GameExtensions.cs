@@ -9,12 +9,12 @@ namespace HdrManager.Extensions
 {
     public static class GameExtensions
     {
-        public static bool HasHdrFeature(this Game game, IEnumerable<Guid> hdrFeatureIds)
+        public static bool HasAnyFeature(this Game game, IEnumerable<Guid> featureIds)
         {
             return game
                 .FeatureIds
                 .EmptyIfNull()
-                .Intersect(hdrFeatureIds)
+                .Intersect(featureIds)
                 .Any();
         }
 

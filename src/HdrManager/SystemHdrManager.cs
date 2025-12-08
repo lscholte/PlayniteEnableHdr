@@ -40,7 +40,7 @@ namespace HdrManager
                 _playniteApi
                     .Database
                     .Games
-                    .Where(game => game.HasHdrFeature(hdrFeatureIds) && !game.HasTag(HdrExclusionTagId))
+                    .Where(game => game.HasAnyFeature(hdrFeatureIds) && !game.HasTag(HdrExclusionTagId))
                     .ToList();
 
             _logger.Info($"Enabling System HDR for {managedHdrGames.Count} games");

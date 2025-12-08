@@ -26,33 +26,33 @@ namespace HdrManager.Test.Extensions
         private static readonly Guid _miscellaneousTag = Guid.NewGuid();
 
         [Test]
-        public void HasHdrFeature_ReturnsFalse_WhenGameHasNullFeatures()
+        public void HasAnyFeature_ReturnsFalse_WhenGameHasNullFeatures()
         {
             Game game = new Game
             {
                 FeatureIds = null
             };
 
-            bool result = game.HasHdrFeature(_hdrFeatures);
+            bool result = game.HasAnyFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrFeature_ReturnsFalse_WhenGameHasEmptyFeatures()
+        public void HasAnyFeature_ReturnsFalse_WhenGameHasEmptyFeatures()
         {
             Game game = new Game
             {
                 FeatureIds = new List<Guid>()
             };
 
-            bool result = game.HasHdrFeature(_hdrFeatures);
+            bool result = game.HasAnyFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrFeature_ReturnsFalse_WhenGameHasNoHdrFeatures()
+        public void HasAnyFeature_ReturnsFalse_WhenGameHasNoHdrFeatures()
         {
             Game game = new Game
             {
@@ -62,13 +62,13 @@ namespace HdrManager.Test.Extensions
                 }
             };
 
-            bool result = game.HasHdrFeature(_hdrFeatures);
+            bool result = game.HasAnyFeature(_hdrFeatures);
 
             Assert.That(result, Is.False);
         }
 
         [Test]
-        public void HasHdrFeature_ReturnsTrue_WhenGameHasOneMatchingHdrFeatures()
+        public void HasAnyFeature_ReturnsTrue_WhenGameHasOneMatchingHdrFeatures()
         {
             Game game = new Game
             {
@@ -79,13 +79,13 @@ namespace HdrManager.Test.Extensions
                 }
             };
 
-            bool result = game.HasHdrFeature(_hdrFeatures);
+            bool result = game.HasAnyFeature(_hdrFeatures);
 
             Assert.That(result, Is.True);
         }
 
         [Test]
-        public void HasHdrFeature_ReturnsTrue_WhenGameHasMultipleMatchingHdrFeatures()
+        public void HasAnyFeature_ReturnsTrue_WhenGameHasMultipleMatchingHdrFeatures()
         {
             Game game = new Game
             {
@@ -97,7 +97,7 @@ namespace HdrManager.Test.Extensions
                 }
             };
 
-            bool result = game.HasHdrFeature(_hdrFeatures);
+            bool result = game.HasAnyFeature(_hdrFeatures);
 
             Assert.That(result, Is.True);
         }
