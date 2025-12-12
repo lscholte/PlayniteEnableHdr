@@ -48,11 +48,39 @@ namespace HdrManager.Generator
             var sb = new StringBuilder();
             sb.AppendLine("namespace HdrManager.Localization.Generated");
             sb.AppendLine("{");
+            sb.AppendLine("    /// <summary>");
+            sb.AppendLine("    /// Provides constants for all localized string keys.");
+            sb.AppendLine("    /// </summary>");
             sb.AppendLine($"    public static class {className}");
             sb.AppendLine("    {");
 
             foreach (var key in keys)
             {
+                var element = doc.Descendants().FirstOrDefault(e => (string?)e.Attribute(xNamespace + "Key") == key);
+                var rawValue = element?.Value ?? string.Empty;
+                rawValue = rawValue.Trim();
+
+                // Escape XML special chars for documentation comment
+                var escaped = rawValue.Replace("&", "&amp;")
+                                      .Replace("<", "&lt;")
+                                      .Replace(">", "&gt;");
+
+                // Add XML documentation comment showing the localized value
+                sb.AppendLine("        /// <summary>");
+                if (string.IsNullOrEmpty(escaped))
+                {
+                    sb.AppendLine($"        /// {key}");
+                }
+                else
+                {
+                    var lines = escaped.Split(new[] { "\r\n", "\n" }, System.StringSplitOptions.None);
+                    foreach (var line in lines)
+                    {
+                        sb.AppendLine($"        /// {line}");
+                    }
+                }
+                sb.AppendLine("        /// </summary>");
+
                 sb.AppendLine($"        public const string {Sanitize(key)} = \"{key}\";");
             }
 
