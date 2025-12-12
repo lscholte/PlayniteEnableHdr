@@ -36,6 +36,21 @@ dotnet_diagnostic.RCS1123.severity = warning
 # RCS1132: Remove redundant overriding member
 dotnet_diagnostic.RCS1132.severity = warning
 
+# RCS1138: Add summary to documentation comment
+dotnet_diagnostic.RCS1138.severity = warning
+
+# RCS1139: Add summary element to documentation comment
+dotnet_diagnostic.RCS1139.severity = warning
+
+# RCS1140: Add exception to documentation comment
+dotnet_diagnostic.RCS1140.severity = warning
+
+# RCS1141: Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1141.severity = warning
+
+# RCS1142: Add 'typeparam' element to documentation comment
+dotnet_diagnostic.RCS1142.severity = warning
+
 # RCS1146: Use conditional access
 dotnet_diagnostic.RCS1146.severity = warning
 
@@ -166,6 +181,7 @@ dotnet_diagnostic.IDE0059.severity = warning
 # Formatting rule (IDE0055)
 dotnet_diagnostic.IDE0055.severity = warning
 
+# Naming rule violation (IDE1006)
 dotnet_diagnostic.IDE1006.severity = warning
 
 # --------------------------------------------
