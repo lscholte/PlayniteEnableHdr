@@ -32,13 +32,7 @@ namespace HdrManager.Test
         public void AllEnglishKeysExistInLocale(string locale)
         {
             ResourceDictionary localizedResources = LoadLocalizatedResources(locale);
-            using (Assert.EnterMultipleScope())
-            {
-                foreach (var key in _englishResources.Keys)
-                {
-                    Assert.That(localizedResources, Does.ContainKey(key));
-                }
-            }
+            Assert.That(localizedResources.Keys, Is.EquivalentTo(_englishResources.Keys));
         }
 
         private static ResourceDictionary LoadLocalizatedResources(string locale)
