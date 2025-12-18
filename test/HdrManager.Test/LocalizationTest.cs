@@ -19,7 +19,7 @@ namespace HdrManager.Test
         [SetUp]
         public void Setup()
         {
-            _englishResources = LoadLocalizatedResources(_englishLocale);
+            _englishResources = LoadLocalizedResources(_englishLocale);
         }
 
         [Test]
@@ -31,11 +31,11 @@ namespace HdrManager.Test
         [TestCaseSource(nameof(GetLocales))]
         public void AllEnglishKeysExistInLocale(string locale)
         {
-            ResourceDictionary localizedResources = LoadLocalizatedResources(locale);
+            ResourceDictionary localizedResources = LoadLocalizedResources(locale);
             Assert.That(localizedResources.Keys, Is.EquivalentTo(_englishResources.Keys));
         }
 
-        private static ResourceDictionary LoadLocalizatedResources(string locale)
+        private static ResourceDictionary LoadLocalizedResources(string locale)
         {
             var localizationFilePath = Path.Combine(_localizationDirectory, $"{locale}.xaml");
             Assert.That(File.Exists(localizationFilePath), $"File not found: {localizationFilePath}");
