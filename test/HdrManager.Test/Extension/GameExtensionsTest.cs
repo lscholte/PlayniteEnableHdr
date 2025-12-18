@@ -1,10 +1,10 @@
-﻿using HdrManager.Extensions;
+﻿using HdrManager.Extension;
 using NUnit.Framework;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 
-namespace HdrManager.Test.Extensions
+namespace HdrManager.Test.Extension
 {
     [TestFixture]
     public class GameExtensionsTest

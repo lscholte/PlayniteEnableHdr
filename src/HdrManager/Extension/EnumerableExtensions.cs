@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace HdrManager.Extensions
+namespace HdrManager.Extension
 {
     /// <summary>
     /// Provides extension methods for working with enumerable sequences.

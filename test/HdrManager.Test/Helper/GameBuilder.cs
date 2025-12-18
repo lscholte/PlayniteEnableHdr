@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace HdrManager.Test.Helpers
+namespace HdrManager.Test.Helper
 {
     public class GameBuilder
     {

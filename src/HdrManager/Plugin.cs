@@ -1,4 +1,4 @@
-﻿using HdrManager.Extensions;
+﻿using HdrManager.Extension;
 using HdrManager.Localization.Generated;
 using Playnite.SDK;
 using Playnite.SDK.Events;

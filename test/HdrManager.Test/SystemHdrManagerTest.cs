@@ -1,4 +1,4 @@
-﻿using HdrManager.Test.Helpers;
+﻿using HdrManager.Test.Helper;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;

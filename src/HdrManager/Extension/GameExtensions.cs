@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HdrManager.Extensions
+namespace HdrManager.Extension
 {
     /// <summary>
     /// Provides extension methods for working with feature and tag identifiers on Game instances.
