@@ -3,7 +3,6 @@ using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using System.Collections.Generic;
-using System;
 using System.Linq;
 
 namespace HdrManager.Test
@@ -14,10 +13,9 @@ namespace HdrManager.Test
         private const string _englishLocale = "en_US";
         private const string _localizationDirectory = "Localization";
 
-        private ResourceDictionary _englishResources;
+        private readonly ResourceDictionary _englishResources;
 
-        [SetUp]
-        public void Setup()
+        public LocalizationTest()
         {
             _englishResources = LoadLocalizedResources(_englishLocale);
         }

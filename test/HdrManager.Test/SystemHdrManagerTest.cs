@@ -12,21 +12,20 @@ namespace HdrManager.Test
     [TestFixture]
     public class SystemHdrManagerTest
     {
-        private List<Tag> _backingTagList;
-        private List<Game> _backingGameList;
-        private List<GameFeature> _backingFeatureList;
+        private readonly List<Tag> _backingTagList;
+        private readonly List<Game> _backingGameList;
+        private readonly List<GameFeature> _backingFeatureList;
 
-        private Mock<IItemCollection<Tag>> _mockTagCollection;
-        private Mock<IItemCollection<Game>> _mockGameCollection;
-        private Mock<IItemCollection<GameFeature>> _mockFeatureCollection;
+        private readonly Mock<IItemCollection<Tag>> _mockTagCollection;
+        private readonly Mock<IItemCollection<Game>> _mockGameCollection;
+        private readonly Mock<IItemCollection<GameFeature>> _mockFeatureCollection;
 
-        private Mock<IGameDatabaseAPI> _mockGameDatabaseApi;
-        private Mock<IPlayniteAPI> _mockPlayniteApi;
+        private readonly Mock<IGameDatabaseAPI> _mockGameDatabaseApi;
+        private readonly Mock<IPlayniteAPI> _mockPlayniteApi;
 
-        private SystemHdrManager _systemHdrManager;
+        private readonly SystemHdrManager _systemHdrManager;
 
-        [SetUp]
-        public void SetUp()
+        public SystemHdrManagerTest()
         {
             _backingTagList = new List<Tag>();
             _mockTagCollection = new Mock<IItemCollection<Tag>>();

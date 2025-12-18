@@ -7,33 +7,31 @@ using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 
 namespace HdrManager.Test
 {
     [TestFixture]
-    public class PluginTest
+    public class PluginTest : IDisposable
     {
-        private Mock<IResourceProvider> _mockResourceProvider;
-        private Mock<IDialogsFactory> _mockDialogsFactory;
-        private Mock<IAddons> _mockAddons;
-        private Mock<IPlayniteAPI> _mockPlayniteApi;
+        private readonly Mock<IResourceProvider> _mockResourceProvider;
+        private readonly Mock<IDialogsFactory> _mockDialogsFactory;
+        private readonly Mock<IAddons> _mockAddons;
+        private readonly Mock<IPlayniteAPI> _mockPlayniteApi;
 
-        private Mock<IPluginSettings> _mockPluginSettings;
-        private Mock<ISystemHdrManager> _mockSystemHdrManager;
+        private readonly Mock<IPluginSettings> _mockPluginSettings;
+        private readonly Mock<ISystemHdrManager> _mockSystemHdrManager;
 
-        private Game _gameWithHdrExclusionTag;
-        private Game _gameWithoutHdrExclusionTag;
+        private readonly Game _gameWithHdrExclusionTag;
+        private readonly Game _gameWithoutHdrExclusionTag;
 
-        private Game _gameWithSystemHdrEnabled;
-        private Game _gameWithSystemHdrDisabled;
+        private readonly Game _gameWithSystemHdrEnabled;
+        private readonly Game _gameWithSystemHdrDisabled;
 
-        private Plugin _plugin;
+        private readonly Plugin _plugin;
 
-        [SetUp]
-        public void SetUp()
+        public PluginTest()
         {
             _mockResourceProvider = new Mock<IResourceProvider>();
             _mockResourceProvider
@@ -86,8 +84,7 @@ namespace HdrManager.Test
             _plugin = new Plugin(_mockPlayniteApi.Object, _mockPluginSettings.Object, _mockSystemHdrManager.Object);
         }
 
-        [TearDown]
-        public void TearDown()
+        public void Dispose()
         {
             _plugin.Dispose();
         }
