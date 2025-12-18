@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace HdrManager.Test
 {
@@ -51,16 +52,10 @@ namespace HdrManager.Test
 
         private static IEnumerable<string> GetLocales()
         {
-            foreach (var file in Directory.EnumerateFiles(_localizationDirectory, "*.xaml"))
-            {
-                string locale = Path.GetFileNameWithoutExtension(file);
-                if (string.Equals(locale, _englishLocale))
-                {
-                    continue;
-                }
-
-                yield return locale;
-            }
+            return Directory
+                .EnumerateFiles(_localizationDirectory, "*.xaml")
+                .Select(Path.GetFileNameWithoutExtension)
+                .Where(locale => !string.Equals(locale, _englishLocale));
         }
     }
 }
