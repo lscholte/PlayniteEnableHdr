@@ -1,8 +1,10 @@
 name: Run Tests
 
 on:
+  pull_request:
   push:
-    branches: ['**']
+    branches:
+      - main
 
 jobs:
   run-tests:
