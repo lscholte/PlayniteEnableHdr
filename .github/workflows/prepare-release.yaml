@@ -1,0 +1,166 @@
+name: Prepare Release
+
+run-name: Prepare Release ${{ github.event.inputs.version }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (format x.y.z)
+        required: true
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: windows-latest
+    steps:
+      - name: Validate Version Format
+        shell: pwsh
+        run: |
+          $version = "${{ github.event.inputs.version }}"
+          if ($version -notmatch '^\d+\.\d+\.\d+$') {
+            Write-Error "❌ Invalid version format: $version. Expected x.y.z"
+            exit 1
+          }
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if Published Release Exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $releases = gh release list --json tagName,isDraft | ConvertFrom-Json
+          $existingRelease = $releases | Where-Object { $_.tagName -eq "v${{ github.event.inputs.version }}" -and $_.isDraft -eq $false }
+          if ($existingRelease) {
+            Write-Error "Published release v${{ github.event.inputs.version }} already exists"
+            exit 1
+          }
+
+      - name: Delete Existing Draft Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete v${{ github.event.inputs.version }} --yes || true
+
+      - name: Delete Existing Tag
+        run: |
+          git tag -d v${{ github.event.inputs.version }} || true
+          git push origin --delete v${{ github.event.inputs.version }} || true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Git Cliff
+        shell: pwsh
+        run: |
+          npm install -g git-cliff
+
+      - name: Create Temporary Directory
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .tmp -Force
+
+      - name: Generate Release Manifest Changelog
+        shell: pwsh
+        run: |
+          git-cliff --unreleased --config .github/cliff/yaml.toml --output .tmp/YAML-CHANGELOG.txt
+
+          if (-Not (Get-Content .tmp/YAML-CHANGELOG.txt)) {
+              Write-Error "❌ There are no user-facing changes from which to generate a release"
+              exit 1
+          }
+
+      - name: Install YAML Powershell Module
+        shell: pwsh
+        run: |
+          Install-Module powershell-yaml -Scope CurrentUser -Force
+          
+      - name: Update Extension Manifest
+        shell: pwsh
+        run: |
+          Import-Module powershell-yaml
+
+          $yaml = Get-Content extension.yaml | ConvertFrom-Yaml
+          $yaml.Version = "${{ github.event.inputs.version }}"
+          $yaml | ConvertTo-Yaml | Set-Content extension.yaml
+
+      - name: Check Playnite SDK Version
+        shell: pwsh
+        run: |
+          [xml]$proj = Get-Content .\src\HdrManager\HdrManager.csproj
+          $pkg = $proj.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "PlayniteSDK" }
+          echo "PLAYNITE_SDK_VERSION=$($pkg.Version.ToString())" >> $env:GITHUB_ENV
+      - name: Update Release Manifest
+        shell: pwsh
+        run: |
+          Import-Module powershell-yaml
+
+          $newPackage = @{
+            Version = "${{ github.event.inputs.version }}"
+            ReleaseDate = (Get-Date -Format "yyyy-MM-dd")
+            RequiredApiVersion = "$env:PLAYNITE_SDK_VERSION"
+            PackageUrl = "https://github.com/lscholte/PlayniteHdrManager/releases/download/v${{ github.event.inputs.version }}/HdrManager_${{ github.event.inputs.version }}.pext"
+            Changelog = @(Get-Content .tmp/YAML-CHANGELOG.txt)
+          }
+
+          $yaml = Get-Content manifest.yaml -Raw | ConvertFrom-Yaml
+          $yaml.Packages = @($newPackage) + $yaml.Packages
+          $yaml | ConvertTo-Yaml | Set-Content manifest.yaml
+
+      - name: Build Extension
+        shell: pwsh
+        run: dotnet build HdrManager.sln --configuration Release
+
+      - name: Run Tests
+        shell: pwsh
+        run: dotnet test --configuration Release
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/v${{ github.event.inputs.version }}
+          title: Release v${{ github.event.inputs.version }}
+          body: |
+            Automated PR to prepare release v${{ github.event.inputs.version }}
+            
+            See the draft release: https://github.com/lscholte/PlayniteHdrManager/releases/tag/v${{ github.event.inputs.version }}
+          base: main
+          commit-message: 'chore: bump version to ${{ github.event.inputs.version}}'
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+
+      - name: Tag Commit with Version
+        run: |
+          $version = "v${{ github.event.inputs.version }}"
+          git tag -f $version
+          git push origin $version
+
+      - name: Package Extension
+        shell: pwsh
+        run: |
+            Compress-Archive -Path src/HdrManager/bin/Release/* -DestinationPath HdrManager_${{ github.event.inputs.version }}.pext -Force
+
+      - name: Generate GitHub Release Changelog
+        shell: pwsh
+        run: |
+          git-cliff --current --config .github/cliff/github.toml --output .tmp/GITHUB-CHANGELOG.md
+
+      - name: Create Draft Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v${{ github.event.inputs.version }} `
+          --title "Version ${{ github.event.inputs.version }}" `
+          --notes-file .tmp/GITHUB-CHANGELOG.md `
+          --draft `
+          HdrManager_${{ github.event.inputs.version }}.pext

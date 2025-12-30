@@ -6,129 +6,35 @@ permissions:
   contents: write
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Release version (format x.y.z)
-        required: true
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
   generate-extension-release:
     name: Generate Extension Release
     runs-on: windows-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
-      - name: Validate Version format
-        shell: pwsh
-        run: |
-          $version = "${{ github.event.inputs.version }}"
-          if ($version -notmatch '^\d+\.\d+\.\d+$') {
-            Write-Error "❌ Invalid version format: $version. Expected x.y.z"
-            exit 1
-          }
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Git Cliff
-        shell: pwsh
-        run: |
-          npm install -g git-cliff
-
-      - name: Generate Release Manifest Changelog
-        shell: pwsh
-        run: |
-          git-cliff --unreleased --config .github/cliff/yaml.toml --output YAML-CHANGELOG.txt
-
-          if (-Not (Get-Content YAML-CHANGELOG.txt)) {
-              Write-Error "❌ There are no user-facing changes from which to generate a release"
-              exit 1
-          }
-
       - name: Install YAML Powershell Module
         shell: pwsh
         run: |
           Install-Module powershell-yaml -Scope CurrentUser -Force
-          
-      - name: Update Extension Manifest
+
+      - name: Extract Version from extension.yaml
         shell: pwsh
         run: |
-          Import-Module powershell-yaml
-
           $yaml = Get-Content extension.yaml | ConvertFrom-Yaml
-          $yaml.Version = "${{ github.event.inputs.version }}"
-          $yaml | ConvertTo-Yaml | Set-Content extension.yaml
+          $version = $yaml.Version
+          echo "RELEASE_VERSION=$version" >> $env:GITHUB_ENV
 
-      - name: Check Playnite SDK Version
-        shell: pwsh
-        run: |
-          [xml]$proj = Get-Content .\src\HdrManager\HdrManager.csproj
-          $pkg = $proj.Project.ItemGroup.PackageReference | Where-Object { $_.Include -eq "PlayniteSDK" }
-          echo "PLAYNITE_SDK_VERSION=$pkg.Version" >> $env:GITHUB_ENV
-      - name: Update Release Manifest
-        shell: pwsh
-        run: |
-          Import-Module powershell-yaml
-
-          $newPackage = @{
-            Version = "${{ github.event.inputs.version }}"
-            RequiredApiVersion = "$PLAYNITE_SDK_VERSION"
-            ReleaseDate = (Get-Date -Format "yyyy-MM-dd")
-            PackageUrl = "https://github.com/lscholte/PlayniteHdrManager/releases/download/v${{ github.event.inputs.version }}/HdrManager_${{ github.event.inputs.version }}.pext"
-            Changelog = @(Get-Content YAML-CHANGELOG.txt)
-          }
-
-          $yaml = Get-Content manifest.yaml -Raw | ConvertFrom-Yaml
-          $yaml.Packages = @($newPackage) + $yaml.Packages
-          $yaml | ConvertTo-Yaml | Set-Content manifest.yaml
-
-      - name: Commit Manifest Changes
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add manifest.yaml extension.yaml
-          git commit -m "chore: bump version to ${{ github.event.inputs.version}}"
-          
-      - name: Tag Commit with Version
-        run: |
-          $version = "v${{ github.event.inputs.version }}"
-          git tag $version
-
-      - name: Build Extension
-        shell: pwsh
-        run: dotnet build HdrManager.sln --configuration Release
-
-      - name: Run Tests
-        shell: pwsh
-        run: dotnet test --configuration Release
-
-      - name: Package Extension
-        shell: pwsh
-        run: |
-            Compress-Archive -Path src/HdrManager/bin/Release/* -DestinationPath HdrManager_${{ github.event.inputs.version }}.pext -Force
-
-      - name: Generate GitHub Release Changelog
-        shell: pwsh
-        run: |
-          git-cliff --current --config .github/cliff/github.toml --output GITHUB-CHANGELOG.md
-
-      - name: Push Version Bump
-        run: |
-          git push
-          git push --tags
-          
-      - name: Create Release
+      - name: Publish Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create v${{ github.event.inputs.version }} `
-          --title "Version ${{ github.event.inputs.version }}" `
-          --notes-file GITHUB-CHANGELOG.md `
-          HdrManager_${{ github.event.inputs.version }}.pext
+          gh release edit --draft=false v$env:RELEASE_VERSION
