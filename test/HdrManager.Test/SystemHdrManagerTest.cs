@@ -66,6 +66,18 @@ namespace HdrManager.Test
 
         [TestCase("HDR")]
         [TestCase("HDR Available")]
+        [TestCase("Video: HDR")]
+        [TestCase("Allows HDR")]
+        [TestCase("Supports HDR")]
+        [TestCase("High Dynamic Range")]
+        [TestCase("High Dynamic Range Supported")]
+        [TestCase("Has HDR")]
+        [TestCase("hdr")]
+        [TestCase("hdr supported")]
+        [TestCase("HDR!")]
+        [TestCase("\tHDR  ")]
+        [TestCase("H D R")]
+        [TestCase("HDR Note")]
         public void EnableSystemHdrForManagedGames_GameWithHdrFeature_ShouldHaveEnableSystemHdrTrue(string featureName)
         {
             GameFeature feature = new GameFeature(featureName)
@@ -85,6 +97,19 @@ namespace HdrManager.Test
 
         [TestCase("Miscellaneous")]
         [TestCase("No HDR")]
+        [TestCase("Not HDR")]
+        [TestCase("HDR Disabled")]
+        [TestCase("Without HDR")]
+        [TestCase("Disable HDR")]
+        [TestCase("Disabled HDR")]
+        [TestCase("phraseWithHdrInside")]
+        [TestCase("hdr not supported")]
+        [TestCase("")]
+        [TestCase("      ")]
+        [TestCase("\tNo HDR  ")]
+        [TestCase("HD")]
+        [TestCase("HD-R")]
+        [TestCase("Has_Hdr")]
         public void EnableSystemHdrForManagedGames_GameWithoutHdrFeature_ShouldHaveEnableSystemHdrFalse(string featureName)
         {
             GameFeature feature = new GameFeature(featureName)

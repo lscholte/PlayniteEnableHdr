@@ -4,18 +4,29 @@ using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace HdrManager
 {
     public class SystemHdrManager : ISystemHdrManager
     {
-
         private static readonly ILogger _logger = LogManager.GetLogger();
-        private static readonly List<string> _hdrFeatureNames = new List<string>()
-        {
+
+        private static readonly string[] _hdrFeatureToken =
+        [
             "HDR",
-            "HDR Available"
-        };
+            "High Dynamic Range",
+            "H D R"
+        ];
+
+        private static readonly string[] _negationTokens =
+        [
+            "No",
+            "Not",
+            "Without",
+            "Disable",
+            "Disabled"
+        ];
 
         private readonly IPlayniteAPI _playniteApi;
 
@@ -32,7 +43,7 @@ namespace HdrManager
                 _playniteApi
                     .Database
                     .Features
-                    .Where(f => _hdrFeatureNames.Contains(f.Name))
+                    .Where(f => IsHdrFeature(f.Name))
                     .Select(f => f.Id)
                     .ToList();
 
@@ -119,6 +130,27 @@ namespace HdrManager
                     .Tags
                     .FirstOrDefault(t => t.Id == HdrExclusionTagId);
             }
+        }
+
+        private static bool IsHdrFeature(string featureName)
+        {
+            if (string.IsNullOrWhiteSpace(featureName))
+            {
+                return false;
+            }
+
+            static string ToWordBoundaryPattern(string token) => $@"\b{Regex.Escape(token)}\b";
+
+            var hdrPattern = string.Join("|", _hdrFeatureToken.Select(ToWordBoundaryPattern));
+            bool hasHdr = Regex.IsMatch(featureName, hdrPattern, RegexOptions.IgnoreCase);
+            if (!hasHdr)
+            {
+                return false;
+            }
+
+            var negationPattern = string.Join("|", _negationTokens.Select(ToWordBoundaryPattern));
+            var isNegated = Regex.IsMatch(featureName, negationPattern, RegexOptions.IgnoreCase);
+            return !isNegated;
         }
     }
 }
