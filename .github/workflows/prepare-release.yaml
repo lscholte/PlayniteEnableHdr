@@ -165,3 +165,21 @@ jobs:
           --notes-file .tmp/GITHUB-CHANGELOG.md `
           --draft `
           .tmp/HdrManager_${{ github.event.inputs.version }}.pext
+
+  cleanup:
+    name: Cleanup Temporary Files
+    runs-on: ubuntu-latest
+    needs: prepare-release
+    if: ${{ failure() || cancelled() }}
+    steps:
+      - name: Remove Tag
+        shell: pwsh
+        run: |
+          git tag -d v${{ github.event.inputs.version }} || true
+          git push origin --delete v${{ github.event.inputs.version }} || true
+
+      - name: Delete branch
+        uses: peter-evans/delete-branch@v2
+        with:
+          branch: temp/release/v${{ github.event.inputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
