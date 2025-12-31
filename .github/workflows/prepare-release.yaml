@@ -41,7 +41,7 @@ jobs:
           $existingRelease = $releases | Where-Object { $_.tagName -eq "v${{ github.event.inputs.version }}" -and $_.isDraft -eq $false }
           if ($existingRelease) {
             Write-Error "Published release v${{ github.event.inputs.version }} already exists"
-            exit 1
+            exit 0
           }
 
       - name: Delete Existing Draft Release
@@ -145,6 +145,21 @@ jobs:
           git checkout temp/release/$version
           git tag -f $version
           git push origin $version
+
+      - name: Verify Tag Exists Remotely
+        shell: pwsh
+        run: |
+          for ($i = 1; $i -le 30; $i++) {
+            $tags = git ls-remote --tags origin
+            if ($tags -match "v${{ github.event.inputs.version }}") {
+              break
+            }
+            Start-Sleep -Seconds 1
+          }
+          if ($tags -notmatch "v${{ github.event.inputs.version }}") {
+            Write-Error "Tag not found after 30 seconds"
+            exit 1
+          }
 
       - name: Package Extension
         shell: pwsh
