@@ -134,7 +134,7 @@ jobs:
           body: |
             Automated PR to prepare release v${{ github.event.inputs.version }}
             
-            See the draft release: https://github.com/lscholte/PlayniteHdrManager/releases/tag/v${{ github.event.inputs.version }}
+            See the release: https://github.com/lscholte/PlayniteHdrManager/releases/tag/v${{ github.event.inputs.version }}
           base: main
           commit-message: 'chore: bump version to ${{ github.event.inputs.version}}'
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
@@ -157,7 +157,7 @@ jobs:
         run: |
           git-cliff --current --config .github/cliff/github.toml --output .tmp/GITHUB-CHANGELOG.md
 
-      - name: Create Draft Release
+      - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
