@@ -1,8 +1,8 @@
+Name: HDR Manager
 Author: Liam Scholte
-Version: 1.3.0
-Icon: icon.png
 Id: EnableHDR_f9295ecb-cfdf-4599-93cb-1011a2ca68ae
+Icon: icon.png
 Type: GenericPlugin
 Module: HdrManager.dll
-Name: HDR Manager
+Version: 1.3.1
 
