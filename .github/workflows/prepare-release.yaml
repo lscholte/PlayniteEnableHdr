@@ -140,26 +140,12 @@ jobs:
           author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
 
       - name: Tag Commit with Version
+        shell: pwsh
         run: |
           $version = "v${{ github.event.inputs.version }}"
           git checkout temp/release/$version
           git tag -f $version
           git push origin $version
-
-      - name: Verify Tag Exists Remotely
-        shell: pwsh
-        run: |
-          for ($i = 1; $i -le 30; $i++) {
-            $tags = git ls-remote --tags origin
-            if ($tags -match "v${{ github.event.inputs.version }}") {
-              break
-            }
-            Start-Sleep -Seconds 1
-          }
-          if ($tags -notmatch "v${{ github.event.inputs.version }}") {
-            Write-Error "Tag not found after 30 seconds"
-            exit 1
-          }
 
       - name: Package Extension
         shell: pwsh
@@ -178,7 +164,6 @@ jobs:
           gh release create v${{ github.event.inputs.version }} `
           --title "Version ${{ github.event.inputs.version }}" `
           --notes-file .tmp/GITHUB-CHANGELOG.md `
-          --draft `
           .tmp/HdrManager_${{ github.event.inputs.version }}.pext
 
   cleanup:
@@ -187,14 +172,12 @@ jobs:
     needs: prepare-release
     if: ${{ failure() || cancelled() }}
     steps:
-      - name: Remove Tag
+      - name: Remove Release Tag
         shell: pwsh
         run: |
           git tag -d v${{ github.event.inputs.version }} || true
           git push origin --delete v${{ github.event.inputs.version }} || true
 
-      - name: Delete branch
-        uses: peter-evans/delete-branch@v2
-        with:
-          branch: temp/release/v${{ github.event.inputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete Release Branch
+        run: |
+          git push origin --delete temp/release/v${{ github.event.inputs.version }}
