@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/HdrManager.Generator/HdrManager.Generator.csproj" />
+  <Project Path="src/HdrManager/HdrManager.csproj" />
+  <Project Path="test/HdrManager.Test/HdrManager.Test.csproj" />
+</Solution>
