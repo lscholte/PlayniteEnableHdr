@@ -1,0 +1,4 @@
+# Deploying a Release
+Run the [Generate Extension Release](https://github.com/lscholte/PlayniteHdrManager/actions/workflows/generate-release.yaml) action, which will generate a release in the [GitHub releases](https://github.com/lscholte/PlayniteHdrManager/releases). This will automatically bump the version of [extenion.yaml](https://github.com/lscholte/PlayniteHdrManager/blob/main/extension.yaml) and [manifest.yaml](https://github.com/lscholte/PlayniteHdrManager/blob/main/manifest.yaml).
+
+Note that a version bump will only succeed if there are user-facing changes made (e.g. `feat`/`fix` commits).
