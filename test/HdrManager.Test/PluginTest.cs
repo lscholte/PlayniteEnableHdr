@@ -1,7 +1,9 @@
 ﻿using HdrManager.Localization.Generated;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using Playnite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,8 +22,8 @@ namespace HdrManager.Test
         private readonly Mock<IPluginSettings> _mockPluginSettings;
         private readonly Mock<ISystemHdrManager> _mockSystemHdrManager;
 
-        private readonly Mock<IPluginSettingsStoreFactory> _mockPluginSettingsStoreFactory;
-        private readonly Mock<ISystemHdrManagerFactory> _mockSystemHdrManagerFactory;
+        private readonly Mock<IServiceProvider> _mockServiceProvider;
+        private readonly Mock<IPluginServiceProviderFactory> _mockServiceProviderFactory;
 
         private readonly Game _gameWithHdrExclusionTag;
         private readonly Game _gameWithoutHdrExclusionTag;
@@ -56,17 +58,20 @@ namespace HdrManager.Test
                 .Setup(mock => mock.LoadSettingsAsync())
                 .ReturnsAsync(_mockPluginSettings.Object);
 
-            _mockPluginSettingsStoreFactory = new Mock<IPluginSettingsStoreFactory>();
-            _mockPluginSettingsStoreFactory
-                .Setup(mock => mock.Create(It.IsAny<string>()))
-                .Returns(_mockPluginSettingsStore.Object);
-
             _mockSystemHdrManager = new Mock<ISystemHdrManager>();
 
-            _mockSystemHdrManagerFactory = new Mock<ISystemHdrManagerFactory>();
-            _mockSystemHdrManagerFactory
-                .Setup(mock => mock.Create(_mockPlayniteApi.Object))
+            _mockServiceProvider = new Mock<IServiceProvider>();
+            _mockServiceProvider
+                .Setup(mock => mock.GetService(typeof(IPluginSettingsStore)))
+                .Returns(_mockPluginSettingsStore.Object);
+            _mockServiceProvider
+                .Setup(mock => mock.GetService(typeof(ISystemHdrManager)))
                 .Returns(_mockSystemHdrManager.Object);
+
+            _mockServiceProviderFactory = new Mock<IPluginServiceProviderFactory>();
+            _mockServiceProviderFactory
+                .Setup(mock => mock.CreateServiceProvider(_mockPlayniteApi.Object))
+                .Returns(_mockServiceProvider.Object);
 
             _gameWithoutHdrExclusionTag = new Game
             {
@@ -91,7 +96,7 @@ namespace HdrManager.Test
                 EnableSystemHdr = false
             };
 
-            _plugin = new Plugin(_mockPluginSettingsStoreFactory.Object, _mockSystemHdrManagerFactory.Object);
+            _plugin = new Plugin(_mockServiceProviderFactory.Object);
         }
 
         [SetUp]

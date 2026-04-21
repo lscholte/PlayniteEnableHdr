@@ -1,5 +1,6 @@
-﻿using HdrManager.Extension;
+using HdrManager.Extension;
 using HdrManager.Localization.Generated;
+using Microsoft.Extensions.DependencyInjection;
 using Playnite;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,10 @@ namespace HdrManager
     {
         #region Private Fields
 
-        private readonly IPluginSettingsStoreFactory _settingsStoreFactory;
-        private readonly ISystemHdrManagerFactory _systemHdrManagerFactory;
+        private readonly IPluginServiceProviderFactory _serviceProviderFactory;
 
         private IPlayniteApi _playniteApi = null!;
+        private IServiceProvider _serviceProvider = null!;
         private IPluginSettingsStore _settingsStore = null!;
         private ISystemHdrManager _systemHdrManager = null!;
 
@@ -24,20 +25,13 @@ namespace HdrManager
         #region Constructors
 
         public Plugin()
-            : this(
-                  new DefaultPluginSettingsStoreFactory(),
-                  new DefaultSystemHdrManagerFactory())
+            : this(new PluginServiceProviderFactory())
         {
         }
 
-        public Plugin(
-            IPluginSettingsStoreFactory settingsStoreFactory,
-            ISystemHdrManagerFactory systemHdrManagerFactory)
+        public Plugin(IPluginServiceProviderFactory serviceProviderFactory)
         {
-            _settingsStoreFactory = settingsStoreFactory
-                ?? throw new ArgumentNullException(nameof(settingsStoreFactory));
-            _systemHdrManagerFactory = systemHdrManagerFactory
-                ?? throw new ArgumentNullException(nameof(systemHdrManagerFactory));
+            _serviceProviderFactory = serviceProviderFactory ?? throw new ArgumentNullException(nameof(serviceProviderFactory));
         }
 
         #endregion
@@ -58,8 +52,11 @@ namespace HdrManager
         public override async Task InitializeAsync(InitializeArgs args)
         {
             _playniteApi = args.Api;
-            _settingsStore = _settingsStoreFactory.Create(args.Api.UserDataDir);
-            _systemHdrManager = _systemHdrManagerFactory.Create(args.Api);
+
+            _serviceProvider = _serviceProviderFactory.CreateServiceProvider(args.Api);
+
+            _settingsStore = _serviceProvider.GetRequiredService<IPluginSettingsStore>();
+            _systemHdrManager = _serviceProvider.GetRequiredService<ISystemHdrManager>();
 
             Settings = await _settingsStore.LoadSettingsAsync();
         }
