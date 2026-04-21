@@ -107,6 +107,12 @@ namespace HdrManager.Test
         }
 
         [Test]
+        public void Constructor_NullServiceProviderFactory_ThrowsArgumentNullException()
+        {
+            Assert.That(() => new Plugin(null!), Throws.ArgumentNullException);
+        }
+
+        [Test]
         public void GetGameMenuItems_SelectedSingleGameWithoutHdrExclusionTag_HasAddHdrExclusionMenuItem()
         {
             var games = new List<Game> { _gameWithoutHdrExclusionTag };
