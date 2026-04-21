@@ -1,160 +1,204 @@
 ﻿using HdrManager.Extension;
 using HdrManager.Localization.Generated;
-using Playnite.SDK;
-using Playnite.SDK.Events;
-using Playnite.SDK.Plugins;
+using Playnite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace HdrManager
 {
-    public class Plugin : GenericPlugin
+    public class Plugin : Playnite.Plugin
     {
         #region Private Fields
 
-        private readonly IPluginSettings _pluginSettings;
-        private readonly ISystemHdrManager _systemHdrManager;
+        private readonly IPluginSettingsStoreFactory _settingsStoreFactory;
+        private readonly ISystemHdrManagerFactory _systemHdrManagerFactory;
+
+        private IPlayniteApi _playniteApi = null!;
+        private IPluginSettingsStore _settingsStore = null!;
+        private ISystemHdrManager _systemHdrManager = null!;
 
         #endregion
 
         #region Constructors
 
-        public Plugin(IPlayniteAPI api)
-            : this(api, null, null)
+        public Plugin()
+            : this(
+                  new DefaultPluginSettingsStoreFactory(),
+                  new DefaultSystemHdrManagerFactory())
         {
         }
 
-        public Plugin(IPlayniteAPI api, IPluginSettings? pluginSettings, ISystemHdrManager? systemHdrManager)
-            : base(api)
+        public Plugin(
+            IPluginSettingsStoreFactory settingsStoreFactory,
+            ISystemHdrManagerFactory systemHdrManagerFactory)
         {
-            Properties = new GenericPluginProperties()
-            {
-                HasSettings = true
-            };
-            _pluginSettings = pluginSettings ?? new PluginSettings(this);
-            _systemHdrManager = systemHdrManager ?? new SystemHdrManager(api);
+            _settingsStoreFactory = settingsStoreFactory
+                ?? throw new ArgumentNullException(nameof(settingsStoreFactory));
+            _systemHdrManagerFactory = systemHdrManagerFactory
+                ?? throw new ArgumentNullException(nameof(systemHdrManagerFactory));
         }
 
         #endregion
 
         #region Public Properties
 
-        public static Guid PCGamingWikiPluginId { get; } = Guid.Parse("c038558e-427b-4551-be4c-be7009ce5a8d");
+        // TODO: Replace this with the correct plugin ID for Playnite 11 once it's available
+        public static string PCGamingWikiPluginId { get; } = "c038558e-427b-4551-be4c-be7009ce5a8d";
 
-        public override Guid Id { get; } = Guid.Parse("b73b5b49-acdf-4da4-a2cc-b91d34d57c9a");
+        public const string Id = "lscholte.HdrManager";
+
+        public IPluginSettings Settings { get; set; } = null!;
 
         #endregion
 
         #region Public Methods
 
-        public override ISettings GetSettings(bool firstRunSettings)
+        public override async Task InitializeAsync(InitializeArgs args)
         {
-            return _pluginSettings;
+            _playniteApi = args.Api;
+            _settingsStore = _settingsStoreFactory.Create(args.Api.UserDataDir);
+            _systemHdrManager = _systemHdrManagerFactory.Create(args.Api);
+
+            Settings = await _settingsStore.LoadSettingsAsync();
         }
 
-        public override UserControl GetSettingsView(bool firstRunView)
+        public override async Task<Playnite.PluginSettingsHandler?> GetSettingsHandlerAsync(GetSettingsHandlerArgs args)
         {
-            return new PluginSettingsView();
+            await Task.CompletedTask;
+            return new PluginSettingsHandler(this);
         }
 
-        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        public override async Task OnApplicationStartupAsync(OnApplicationStartupArgs args)
         {
-            _systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
-            _systemHdrManager.EnableSystemHdrForManagedGames();
-            ShowPcGamingWikiWarning();
+            await _systemHdrManager.CreateOrUpdateHdrExclusionTag(_playniteApi.GetLocalizedString(LocalizationKeys.HdrManagerExclusionTag));
+            await _systemHdrManager.EnableSystemHdrForManagedGames();
+            await ShowPcGamingWikiWarning();
         }
 
-        public override void OnLibraryUpdated(OnLibraryUpdatedEventArgs args)
+        public override async Task OnLibraryUpdateFinishedAsync(OnLibraryUpdateFinishedArgs args)
         {
-            _systemHdrManager.EnableSystemHdrForManagedGames();
+            await _systemHdrManager.EnableSystemHdrForManagedGames();
         }
 
-        public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
+        public override ICollection<MenuItemDescriptor> GetGameMenuItemDescriptors(GetGameMenuItemDescriptorsArgs args)
         {
-            if (args.Games.All(game => game.HasTag(SystemHdrManager.HdrExclusionTagId)))
+            return
+            [
+                new MenuItemDescriptor(
+                    LocalizationKeys.ContextMenuSectionHeader,
+                    _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuSectionHeader))
+            ];
+        }
+
+        public override ICollection<MenuItemImpl>? GetGameMenuItems(GetGameMenuItemsArgs args)
+        {
+            IEnumerable<MenuItemImpl> GenerateToggleHdrMenuItems(MenuItemImpl.GetChildrenArgs _)
             {
-                yield return new GameMenuItem
+                if (args.Games.All(game => game.EnableSystemHdr))
                 {
-                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuRemoveExclusionTag),
-                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => _systemHdrManager.RemoveHdrExclusionTagFromGames(a.Games)
-                };
-            }
-            else
-            {
-                yield return new GameMenuItem
+                    yield return new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuDisableHdrSupport),
+                        async () => await _systemHdrManager.SetSystemHdrForGames(args.Games, false));
+                }
+                else
                 {
-                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuAddExclusionTag),
-                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) =>
-                    {
-                        _systemHdrManager.CreateOrUpdateHdrExclusionTag(PlayniteApi.Resources.GetString(LocalizationKeys.HdrManagerExclusionTag));
-                        _systemHdrManager.AddHdrExclusionTagToGames(a.Games);
-                    }
-                };
+                    yield return new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuEnableHdrSupport),
+                        async () => await _systemHdrManager.SetSystemHdrForGames(args.Games, true));
+                }
             }
 
-            if (args.Games.All(game => game.EnableSystemHdr))
+            IEnumerable<MenuItemImpl> GenerateToggleExclusionTagMenuItems(MenuItemImpl.GetChildrenArgs _)
             {
-                yield return new GameMenuItem
+                if (args.Games.All(game => game.HasTag(SystemHdrManager.HdrExclusionTagId)))
                 {
-                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuDisableHdrSupport),
-                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => _systemHdrManager.SetSystemHdrForGames(a.Games, false)
-                };
+                    yield return new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuRemoveExclusionTag),
+                        async () => await _systemHdrManager.RemoveHdrExclusionTagFromGames(args.Games));
+                }
+                else
+                {
+                    yield return new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuAddExclusionTag),
+                        async () =>
+                        {
+                            await _systemHdrManager.CreateOrUpdateHdrExclusionTag(_playniteApi.GetLocalizedString(LocalizationKeys.HdrManagerExclusionTag));
+                            await _systemHdrManager.AddHdrExclusionTagToGames(args.Games);
+                        });
+                }
             }
-            else
+
+            if (args.ItemId == LocalizationKeys.ContextMenuSectionHeader)
             {
-                yield return new GameMenuItem
-                {
-                    Description = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuEnableHdrSupport),
-                    MenuSection = PlayniteApi.Resources.GetString(LocalizationKeys.ContextMenuSectionHeader),
-                    Action = (a) => _systemHdrManager.SetSystemHdrForGames(a.Games, true)
-                };
+                return [
+                    new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuSectionHeader),
+                        childArgs => GenerateToggleHdrMenuItems(childArgs).Concat(GenerateToggleExclusionTagMenuItems(childArgs)))
+                ];
             }
+
+            return null;
         }
 
-        public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
+        public override ICollection<MenuItemDescriptor> GetAppMenuItemDescriptors(GetAppMenuItemDescriptorsArgs args)
         {
-            yield return new MainMenuItem
+            return
+            [
+                new MenuItemDescriptor(LocalizationKeys.ExtensionMenuRunHdrActivation, _playniteApi.GetLocalizedString(LocalizationKeys.ExtensionMenuRunHdrActivation))
+            ];
+        }
+
+        public override ICollection<MenuItemImpl>? GetAppMenuItems(GetAppMenuItemsArgs args)
+        {
+            if (args.ItemId == LocalizationKeys.ExtensionMenuRunHdrActivation)
             {
-                Description = PlayniteApi.Resources.GetString(LocalizationKeys.ExtensionMenuRunHdrActivation),
-                MenuSection = "@",
-                Action = _ => _systemHdrManager.EnableSystemHdrForManagedGames()
-            };
+                return [
+                    new MenuItemImpl(
+                        _playniteApi.GetLocalizedString(LocalizationKeys.ExtensionMenuRunHdrActivation),
+                        async () => await _systemHdrManager.EnableSystemHdrForManagedGames())
+                    ];
+            }
+
+            return null;
+        }
+
+        public async Task SaveSettingsAsync(IPluginSettings settings)
+        {
+            Settings = settings;
+            await _settingsStore.SaveSettingsAsync(settings);
         }
 
         #endregion
 
         #region Private Methods
 
-        private void ShowPcGamingWikiWarning()
+        private async Task ShowPcGamingWikiWarning()
         {
-            if (!_pluginSettings.IsPCGamingWikiWarningSuppressed &&
-                !PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id == PCGamingWikiPluginId))
+            if (!Settings.IsPCGamingWikiWarningSuppressed &&
+                !_playniteApi.Addons.Plugins.Any(plugin => plugin.Id == PCGamingWikiPluginId))
             {
-                var okResponse = new MessageBoxOption(PlayniteApi.Resources.GetString(LocalizationKeys.DialogResponseOK), true, true);
-                var suppressWarningResponse = new MessageBoxOption(PlayniteApi.Resources.GetString(LocalizationKeys.DialogResponseSuppressWarning));
+                var okResponse = new MessageBoxResponse(_playniteApi.GetLocalizedString(LocalizationKeys.DialogResponseOk), true, true);
+                var suppressWarningResponse = new MessageBoxResponse(_playniteApi.GetLocalizedString(LocalizationKeys.DialogResponseSuppressWarning));
 
-                List<MessageBoxOption> options = new List<MessageBoxOption>()
-                {
+                List<MessageBoxResponse> responses =
+                [
                     okResponse,
-                    suppressWarningResponse
-                };
+                    suppressWarningResponse,
+                ];
 
-                MessageBoxOption response = PlayniteApi.Dialogs.ShowMessage(
-                    PlayniteApi.Resources.GetString(LocalizationKeys.PCGamingWikiDialogWarningMessage),
+                MessageBoxResponse? response = await _playniteApi.Dialogs.ShowMessageAsync(
+                    _playniteApi.GetLocalizedString(LocalizationKeys.PCGamingWikiDialogWarningMessage),
                     "",
-                    MessageBoxImage.Warning,
-                    options);
+                    MessageBoxSeverity.Warning,
+                    responses,
+                    []);
+
                 if (response == suppressWarningResponse)
                 {
-                    _pluginSettings.BeginEdit();
-                    _pluginSettings.IsPCGamingWikiWarningSuppressed = true;
-                    _pluginSettings.EndEdit();
+                    Settings.IsPCGamingWikiWarningSuppressed = true;
+                    await SaveSettingsAsync(Settings);
                 }
             }
         }

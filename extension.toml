@@ -1,0 +1,6 @@
+﻿id = "lscholte.HdrManager"
+name = "HDR Manager"
+author = "Liam Scholte"
+version = "2.0.0"
+module = "HdrManager.dll"
+source_link = "https://github.com/lscholte/PlayniteHdrManager"

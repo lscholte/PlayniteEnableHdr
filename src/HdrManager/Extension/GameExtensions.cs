@@ -1,4 +1,4 @@
-﻿using Playnite.SDK.Models;
+﻿using Playnite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace HdrManager.Extension
         /// <param name="game">The game to check for the presence of features. Cannot be null.</param>
         /// <param name="featureIds">A collection of feature identifiers to search for. Cannot be null.</param>
         /// <returns>true if the game contains at least one of the specified feature identifiers; otherwise, false.</returns>
-        public static bool HasAnyFeature(this Game game, IEnumerable<Guid> featureIds)
+        public static bool HasAnyFeature(this Game game, IEnumerable<string> featureIds)
         {
             return game
                 .FeatureIds
@@ -34,7 +34,7 @@ namespace HdrManager.Extension
         /// <param name="game">The game instance to check for the presence of the tag. Cannot be null.</param>
         /// <param name="tagId">The unique identifier of the tag to locate within the game's tags.</param>
         /// <returns>true if the game contains the specified tag identifier; otherwise, false.</returns>
-        public static bool HasTag(this Game game, Guid tagId)
+        public static bool HasTag(this Game game, string tagId)
         {
             return game
                 .TagIds
@@ -49,15 +49,15 @@ namespace HdrManager.Extension
         /// specified tag. If the tag already exists in the collection, it is not added again.</remarks>
         /// <param name="game">The game instance to which the tag will be added. Cannot be null.</param>
         /// <param name="tagId">The unique identifier of the tag to add to the game.</param>
-        public static void AddTag(this Game game, Guid tagId)
+        public static void AddTag(this Game game, string tagId)
         {
             if (game.TagIds == null)
             {
-                game.TagIds = new List<Guid>() { tagId };
+                game.TagIds = new HashSet<string>() { tagId };
             }
             else
             {
-                game.TagIds.AddMissing(tagId);
+                game.TagIds.Add(tagId);
             }
         }
     }

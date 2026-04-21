@@ -1,8 +1,7 @@
-﻿using Playnite.SDK;
-
+﻿
 namespace HdrManager
 {
-    public interface IPluginSettings : ISettings
+    public interface IPluginSettings
     {
         bool IsPCGamingWikiWarningSuppressed { get; set; }
     }

@@ -1,4 +1,4 @@
-﻿using Playnite.SDK.Models;
+﻿using Playnite;
 using System;
 using System.Linq;
 
@@ -25,15 +25,15 @@ namespace HdrManager.Test.Helper
             return this;
         }
 
-        public GameBuilder WithTagIds(params Guid[] tagIds)
+        public GameBuilder WithTagIds(params string[] tagIds)
         {
-            _game.TagIds = tagIds.ToList();
+            _game.TagIds = tagIds.ToHashSet();
             return this;
         }
 
-        public GameBuilder WithFeatureIds(params Guid[] featureIds)
+        public GameBuilder WithFeatureIds(params string[] featureIds)
         {
-            _game.FeatureIds = featureIds.ToList();
+            _game.FeatureIds = featureIds.ToHashSet();
             return this;
         }
 

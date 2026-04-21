@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
+		<TargetFramework>net10.0-windows</TargetFramework>
 		<RootNamespace>HdrManager</RootNamespace>
 		<AssemblyName>HdrManager</AssemblyName>
 		<OutputType>Library</OutputType>
 		<UseWPF>true</UseWPF>
+		<EnableDynamicLoading>true</EnableDynamicLoading>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -13,28 +14,24 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PlayniteSDK" Version="6.9.0">
-			<ExcludeAssets>runtime</ExcludeAssets>
-		</PackageReference>
+		<PackageReference Include="Playnite.SDK" Version="11.0.0-alpha9" />
 		<ProjectReference Include="..\HdrManager.Generator\HdrManager.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Extension metadata -->
-		<None Include="$(AssetsDir)extension.yaml" CopyToOutputDirectory="PreserveNewest" />
-		<None Include="$(AssetsDir)icon.png" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(AssetsDir)extension.toml" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="$(AssetsDir)icon.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>pluginicon.png</TargetPath>
+		</None>
+		<None Include="$(AssetsDir)README.md" CopyToOutputDirectory="PreserveNewest" />
 
 		<!-- Localization files -->
-		<None Include="Localization\*.xaml" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="Localization\*.ftl" CopyToOutputDirectory="PreserveNewest" />
 
 		<!-- Localization file for LocalizationKeys generator -->
-		<AdditionalFiles Include="Localization\en_US.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Reference Include="PresentationCore" />
-	  <Reference Include="PresentationFramework" />
-	  <Reference Include="WindowsBase" />
+		<AdditionalFiles Include="Localization\en_US.ftl" />
 	</ItemGroup>
 
 </Project>

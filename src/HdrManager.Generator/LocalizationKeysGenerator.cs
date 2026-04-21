@@ -3,6 +3,8 @@ using Microsoft.CodeAnalysis.Text;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace HdrManager.Generator
 {
@@ -15,33 +17,65 @@ namespace HdrManager.Generator
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var xamlFile = context
+            var ftlFile = context
                 .AdditionalFiles
-                .FirstOrDefault(f => f.Path.EndsWith("en_US.xaml"));
+                .FirstOrDefault(f => f.Path.EndsWith("en_US.ftl"));
 
-            if (xamlFile == null)
+            if (ftlFile == null)
             {
                 return;
             }
 
-            var xamlText = xamlFile.GetText(context.CancellationToken)?.ToString();
-            if (string.IsNullOrEmpty(xamlText))
+            var ftlText = ftlFile.GetText(context.CancellationToken)?.ToString();
+            if (string.IsNullOrEmpty(ftlText))
             {
                 return;
             }
 
-            // Parse XAML as XML
-            var doc = XDocument.Parse(xamlText);
+            // Parse Fluent (.ftl) file to extract top-level message ids and their values.
+            // A simple parser: lines matching `id = value` (excluding terms starting with '-')
+            var keys = new List<string>();
+            var values = new Dictionary<string, string>();
 
-            // Define the XAML namespace for "x"
-            XNamespace xNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
+            var ftl = ftlText ?? string.Empty;
+            var lines = ftl.Replace("\r\n", "\n").Split('\n');
+            var messageRegex = new Regex("^\\s*([A-Za-z0-9_][A-Za-z0-9_-]*)\\s*=\\s*(.*)$");
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+                var trimmed = line.TrimStart();
+                // Skip comments and terms (terms start with '-')
+                if (trimmed.Length == 0 || trimmed.StartsWith("#") || trimmed.StartsWith("-"))
+                {
+                    continue;
+                }
 
-            // Collect keys
-            var keys = doc
-                .Descendants()
-                .Where(e => e.Attribute(xNamespace + "Key") != null)
-                .Select(e => e.Attribute(xNamespace + "Key")!.Value)
-                .ToList();
+                var m = messageRegex.Match(line);
+                if (!m.Success)
+                {
+                    continue;
+                }
+
+                var id = m.Groups[1].Value;
+                var valueBuilder = new StringBuilder();
+                var firstValue = m.Groups[2].Value.TrimEnd();
+                valueBuilder.Append(firstValue);
+
+                // Consume following indented continuation lines as part of the value
+                int j = i + 1;
+                while (j < lines.Length && lines[j].Length > 0 && char.IsWhiteSpace(lines[j][0]))
+                {
+                    // append the line without leading indentation
+                    valueBuilder.Append('\n');
+                    valueBuilder.Append(lines[j].TrimStart());
+                    j++;
+                }
+
+                i = j - 1;
+
+                keys.Add(id);
+                values[id] = valueBuilder.ToString().Trim();
+            }
 
             string className = "LocalizationKeys";
 
@@ -56,9 +90,8 @@ namespace HdrManager.Generator
 
             foreach (var key in keys)
             {
-                var element = doc.Descendants().FirstOrDefault(e => (string?)e.Attribute(xNamespace + "Key") == key);
-                var rawValue = element?.Value ?? string.Empty;
-                rawValue = rawValue.Trim();
+                values.TryGetValue(key, out var rawValue);
+                rawValue = (rawValue ?? string.Empty).Trim();
 
                 // Escape XML special chars for documentation comment
                 var escaped = rawValue.Replace("&", "&amp;")
@@ -73,8 +106,8 @@ namespace HdrManager.Generator
                 }
                 else
                 {
-                    var lines = escaped.Split(new[] { "\r\n", "\n" }, System.StringSplitOptions.None);
-                    foreach (var line in lines)
+                    var docLines = escaped.Split(new[] { "\r\n", "\n" }, System.StringSplitOptions.None);
+                    foreach (var line in docLines)
                     {
                         sb.AppendLine($"        /// {line}");
                     }
@@ -92,13 +125,62 @@ namespace HdrManager.Generator
 
         private string Sanitize(string key)
         {
-            // Replace invalid identifier chars with underscores
+            // Convert to PascalCase and ensure a valid identifier.
+            // Split on any non-alphanumeric character, capitalize each part and join.
+            var parts = Regex.Split(key ?? string.Empty, "[^A-Za-z0-9]+");
             var sb = new StringBuilder();
-            foreach (var c in key)
+
+            // Known overrides for acronym-like tokens so generated identifiers keep expected casing
+            // Add more entries here as needed (lowercase -> desired casing)
+            var overrides = new Dictionary<string, string>
             {
-                sb.Append(char.IsLetterOrDigit(c) ? c : '_');
+                { "pc", "PC" },
+                { "pcgamingwiki", "PCGamingWiki" }
+            };
+
+            foreach (var part in parts)
+            {
+                if (string.IsNullOrEmpty(part))
+                {
+                    continue;
+                }
+
+                var lower = part.ToLowerInvariant();
+                if (overrides.TryGetValue(lower, out var mapped))
+                {
+                    sb.Append(mapped);
+                    continue;
+                }
+
+                // Uppercase first char, keep remainder as-is
+                var first = part[0];
+                sb.Append(char.ToUpperInvariant(first));
+                if (part.Length > 1)
+                {
+                    sb.Append(part, 1, part.Length - 1);
+                }
             }
-            return sb.ToString();
+
+            var result = sb.ToString();
+            if (string.IsNullOrEmpty(result))
+            {
+                return "_";
+            }
+
+            // If it starts with a digit, prefix with underscore to make it a valid identifier
+            if (!char.IsLetter(result[0]) && result[0] != '_')
+            {
+                result = "_" + result;
+            }
+
+            // Replace any remaining invalid characters with underscores (defensive)
+            var finalSb = new StringBuilder();
+            foreach (var c in result)
+            {
+                finalSb.Append(char.IsLetterOrDigit(c) ? c : '_');
+            }
+
+            return finalSb.ToString();
         }
     }
 }

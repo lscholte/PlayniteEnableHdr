@@ -1,0 +1,11 @@
+context-menu-section-header = HDR Manager
+context-menu-enable-hdr-support = Enable Playnite HDR Support
+context-menu-disable-hdr-support = Disable Playnite HDR Support
+context-menu-add-exclusion-tag = Add to Ignore List
+context-menu-remove-exclusion-tag = Remove from Ignore List
+extension-menu-run-hdr-activation = Detect and Activate HDR
+hdr-manager-exclusion-tag = [HDR Manager] Excluded
+dialog-response-ok = OK
+dialog-response-suppress-warning = Don't Show Again
+pcgamingwiki-dialog-warning-message = The HDR Manager add-on is installed, but the PCGamingWiki Metadata Provider add-on is not installed. It is recommended to install the PCGamingWiki Metadata Provider add-on to get the best experience with HDR Manager.
+setting-suppress-pcgamingwiki-warning = Suppress PCGamingWiki Metadata Provider Warning

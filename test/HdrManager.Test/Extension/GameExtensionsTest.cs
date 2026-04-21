@@ -1,7 +1,6 @@
 ﻿using HdrManager.Extension;
 using NUnit.Framework;
-using Playnite.SDK.Models;
-using System;
+using Playnite;
 using System.Collections.Generic;
 
 namespace HdrManager.Test.Extension
@@ -9,21 +8,21 @@ namespace HdrManager.Test.Extension
     [TestFixture]
     public class GameExtensionsTest
     {
-        private static readonly Guid _hdrFeatureA = Guid.NewGuid();
-        private static readonly Guid _hdrFeatureB = Guid.NewGuid();
-        private static readonly Guid _hdrFeatureC = Guid.NewGuid();
+        private const string _hdrFeatureA = "Feature A";
+        private const string _hdrFeatureB = "Feature B";
+        private const string _hdrFeatureC = "Feature C";
 
-        private static readonly IEnumerable<Guid> _hdrFeatures = new List<Guid>
-        {
+        private static readonly IEnumerable<string> _hdrFeatures =
+        [
             _hdrFeatureA,
             _hdrFeatureB,
             _hdrFeatureC
-        };
+        ];
 
-        private static readonly Guid _miscellaneousFeature = Guid.NewGuid();
+        private const string _miscellaneousFeature = "Miscellaneous Feature";
 
-        private static readonly Guid _hdrExclusionTag = Guid.NewGuid();
-        private static readonly Guid _miscellaneousTag = Guid.NewGuid();
+        private const string _hdrExclusionTag = "HDR Exclusion Tag";
+        private const string _miscellaneousTag = "Miscellaneous Tag";
 
         [Test]
         public void HasAnyFeature_ReturnsFalse_WhenGameHasNullFeatures()
@@ -43,7 +42,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                FeatureIds = new List<Guid>()
+                FeatureIds = new HashSet<string>()
             };
 
             bool result = game.HasAnyFeature(_hdrFeatures);
@@ -56,7 +55,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                FeatureIds = new List<Guid>
+                FeatureIds = new HashSet<string>
                 {
                     _miscellaneousFeature
                 }
@@ -72,7 +71,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                FeatureIds = new List<Guid>
+                FeatureIds = new HashSet<string>
                 {
                     _hdrFeatureA,
                     _miscellaneousFeature
@@ -89,7 +88,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                FeatureIds = new List<Guid>
+                FeatureIds = new HashSet<string>
                 {
                     _hdrFeatureA,
                     _hdrFeatureB,
@@ -120,7 +119,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>()
+                TagIds = new HashSet<string>()
             };
 
             bool result = game.HasTag(_hdrExclusionTag);
@@ -133,7 +132,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>
+                TagIds = new HashSet<string>
                 {
                     _miscellaneousTag
                 }
@@ -149,7 +148,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>
+                TagIds = new HashSet<string>
                 {
                     _hdrExclusionTag,
                     _miscellaneousTag
@@ -181,7 +180,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>()
+                TagIds = new HashSet<string>()
             };
 
             game.AddTag(_hdrExclusionTag);
@@ -196,7 +195,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>
+                TagIds = new HashSet<string>
                 {
                     _miscellaneousTag
                 }
@@ -215,7 +214,7 @@ namespace HdrManager.Test.Extension
         {
             Game game = new Game
             {
-                TagIds = new List<Guid>
+                TagIds = new HashSet<string>
                 {
                     _hdrExclusionTag
                 }
