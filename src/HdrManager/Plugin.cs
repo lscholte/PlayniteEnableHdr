@@ -97,13 +97,13 @@ namespace HdrManager
                 {
                     yield return new MenuItemImpl(
                         _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuDisableHdrSupport),
-                        async () => await _systemHdrManager.SetSystemHdrForGames(args.Games, false));
+                        async (_) => await _systemHdrManager.SetSystemHdrForGames(args.Games, false));
                 }
                 else
                 {
                     yield return new MenuItemImpl(
                         _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuEnableHdrSupport),
-                        async () => await _systemHdrManager.SetSystemHdrForGames(args.Games, true));
+                        async (_) => await _systemHdrManager.SetSystemHdrForGames(args.Games, true));
                 }
             }
 
@@ -113,13 +113,13 @@ namespace HdrManager
                 {
                     yield return new MenuItemImpl(
                         _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuRemoveExclusionTag),
-                        async () => await _systemHdrManager.RemoveHdrExclusionTagFromGames(args.Games));
+                        async (_) => await _systemHdrManager.RemoveHdrExclusionTagFromGames(args.Games));
                 }
                 else
                 {
                     yield return new MenuItemImpl(
                         _playniteApi.GetLocalizedString(LocalizationKeys.ContextMenuAddExclusionTag),
-                        async () =>
+                        async (_) =>
                         {
                             await _systemHdrManager.CreateOrUpdateHdrExclusionTag(_playniteApi.GetLocalizedString(LocalizationKeys.HdrManagerExclusionTag));
                             await _systemHdrManager.AddHdrExclusionTagToGames(args.Games);
@@ -154,7 +154,7 @@ namespace HdrManager
                 return [
                     new MenuItemImpl(
                         _playniteApi.GetLocalizedString(LocalizationKeys.ExtensionMenuRunHdrActivation),
-                        async () => await _systemHdrManager.EnableSystemHdrForManagedGames())
+                        async (_) => await _systemHdrManager.EnableSystemHdrForManagedGames())
                     ];
             }
 

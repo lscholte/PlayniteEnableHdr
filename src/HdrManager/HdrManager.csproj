@@ -15,7 +15,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
-		<PackageReference Include="Playnite.SDK" Version="11.0.0-alpha9" />
+		<PackageReference Include="Playnite.SDK" Version="11.0.0-zeta10" />
 		<ProjectReference Include="..\HdrManager.Generator\HdrManager.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
@@ -24,7 +24,7 @@
 		<None Include="$(AssetsDir)extension.toml" CopyToOutputDirectory="PreserveNewest" />
 		<None Include="$(AssetsDir)icon.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<TargetPath>pluginicon.png</TargetPath>
+			<TargetPath>icon.png</TargetPath>
 		</None>
 		<None Include="$(AssetsDir)README.md" CopyToOutputDirectory="PreserveNewest" />
 
